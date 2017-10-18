@@ -34,29 +34,29 @@ run_header_dtype_65 = np.dtype([
 
 
 run_header_dtype_74 = np.dtype([
-    ('run_header', 'S4'),
-    ('run_number', 'float32'),
-    ('date', 'float32'),
-    ('version', 'float32'),
-    ('n_observation_levels', 'float32'),
-    ('observation_height', 'float32', (10, )),
-    ('energy_spectrum_slope', 'float32'),
-    ('energy_min', 'float32'),
-    ('energy_max', 'float32'),
-    ('egs4_flag', 'float32'),
-    ('nkg_flag', 'float32'),
-    ('energy_cutoff_hadrons', 'float32'),
-    ('energy_cutoff_muons', 'float32'),
-    ('energy_cutoff_electrons', 'float32'),
-    ('energy_cutoff_photons', 'float32'),
-    ('physical_constants_and_interaction_flags', 'float32', (50, )),
-    ('inclined_observation_plange_x', 'float32'),
-    ('inclined_observation_plange_y', 'float32'),
-    ('inclined_observation_plange_z', 'float32'),
-    ('inclined_observation_plange_theta', 'float32'),
-    ('inclined_observation_plange_phi', 'float32'),
-    ('unused', 'float32', (14, )),
-    ('n_showers', 'float32'),
+    ('run_header', 'S4'),  # 1
+    ('run_number', 'float32'),  # 2
+    ('date', 'float32'),  # 3
+    ('version', 'float32'),  # 4
+    ('n_observation_levels', 'float32'),  # 5
+    ('observation_height', 'float32', (10, )),  # 6 - 15
+    ('energy_spectrum_slope', 'float32'),  # 16
+    ('energy_min', 'float32'),  # 17
+    ('energy_max', 'float32'),  # 18
+    ('egs4_flag', 'float32'),  # 19
+    ('nkg_flag', 'float32'),  # 20
+    ('energy_cutoff_hadrons', 'float32'),  # 21
+    ('energy_cutoff_muons', 'float32'),  # 22
+    ('energy_cutoff_electrons', 'float32'),  # 23
+    ('energy_cutoff_photons', 'float32'),  # 24
+    ('physical_constants_and_interaction_flags', 'float32', (50, )), # 24 - 74
+    ('inclined_observation_plange_x', 'float32'),  # 75
+    ('inclined_observation_plange_y', 'float32'),  # 76
+    ('inclined_observation_plange_z', 'float32'),  # 77
+    ('inclined_observation_plange_theta', 'float32'),  # 78
+    ('inclined_observation_plange_phi', 'float32'),  # 79
+    ('unused', 'float32', (14, )),  # 79 - 93
+    ('n_showers', 'float32'),  # 94
     ('cka', 'float32', (40, )),
     ('ceta', 'float32', (5, )),
     ('cstrba', 'float32', (11, )),

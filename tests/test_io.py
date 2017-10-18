@@ -1,6 +1,8 @@
+import numpy as np
+
 test_files = (
     'tests/resources/mmcs65',
-    'tests/resources/corsika75600'
+    'tests/resources/corsika74100'
 )
 
 
@@ -10,7 +12,7 @@ def test_fortran_raw():
     with open('tests/resources/mmcs65', 'rb') as f:
         assert read_buffer_size(f) is None
 
-    with open('tests/resources/corsika75600', 'rb') as f:
+    with open('tests/resources/corsika74100', 'rb') as f:
         assert read_buffer_size(f) == 22932  # standard CORSIKA buffer size
 
 
