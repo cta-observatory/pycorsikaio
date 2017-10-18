@@ -1,0 +1,75 @@
+import numpy as np
+
+
+run_header_dtype_65 = np.dtype([
+    ('run_header', 'S4'),  # 1
+    ('run_number', 'float32'),  # 2
+    ('date', 'float32'),  # 3
+    ('version', 'float32'),  # 4
+    ('n_observation_levels', 'float32'),  # 5
+    ('observation_height', 'float32', (10, )),  # 6 - 15
+    ('energy_spectrum_slope', 'float32'),  # 16
+    ('energy_min', 'float32'),  # 17
+    ('energy_max', 'float32'),  # 18
+    ('egs4_flag', 'float32'),  # 19
+    ('nkg_flag', 'float32'),  # 20
+    ('energy_cutoff_hadrons', 'float32'),  # 21
+    ('energy_cutoff_muons', 'float32'),  # 22
+    ('energy_cutoff_electrons', 'float32'),  # 23
+    ('energy_cutoff_photons', 'float32'),  # 24
+    ('physical_constants_and_interaction_flags', 'float32', (50, )),  # 25 - 74
+    ('unused', 'float32', (20, )),  # 75 - 94
+    ('cka', 'float32', (40, )),  # 94 - 134
+    ('ceta', 'float32', (5, )),  # 135 - 139
+    ('cstrba', 'float32', (11, )),  # 140 - 150
+    ('unused2', 'float32', (104, )),  # 150 - 254
+    ('aatm', 'float32', (5, )),  # 255 - 259
+    ('batm', 'float32', (5, )),  # 260 - 264
+    ('catm', 'float32', (5, )),  # 265 - 269
+    ('nflain', 'float32'),  # 270
+    ('nfdif', 'float32'),  # 271
+    ('nflpi0_100nflpif', 'float32'),  # 272
+    ('nflche_100nfgragm', 'float32'),  # 273
+])
+
+
+run_header_dtype_75 = np.dtype([
+    ('run_header', 'S4'),
+    ('run_number', 'float32'),
+    ('date', 'float32'),
+    ('version', 'float32'),
+    ('n_observation_levels', 'float32'),
+    ('observation_height', 'float32', (10, )),
+    ('energy_spectrum_slope', 'float32'),
+    ('energy_min', 'float32'),
+    ('energy_max', 'float32'),
+    ('egs4_flag', 'float32'),
+    ('nkg_flag', 'float32'),
+    ('energy_cutoff_hadrons', 'float32'),
+    ('energy_cutoff_muons', 'float32'),
+    ('energy_cutoff_electrons', 'float32'),
+    ('energy_cutoff_photons', 'float32'),
+    ('physical_constants_and_interaction_flags', 'float32', (50, )),
+    ('inclined_observation_plange_x', 'float32'),
+    ('inclined_observation_plange_y', 'float32'),
+    ('inclined_observation_plange_z', 'float32'),
+    ('inclined_observation_plange_theta', 'float32'),
+    ('inclined_observation_plange_phi', 'float32'),
+    ('unused', 'float32', (14, )),
+    ('n_showers', 'float32'),
+    ('cka', 'float32', (40, )),
+    ('ceta', 'float32', (5, )),
+    ('cstrba', 'float32', (11, )),
+    ('unused2', 'float32', (97, )),
+    ('x_scatter', 'float32'),
+    ('y_scatter', 'float32'),
+    ('hlay', 'float32', (5, )),
+    ('aatm', 'float32', (5, )),
+    ('batm', 'float32', (5, )),
+    ('catm', 'float32', (5, )),
+    ('nflain', 'float32'),
+    ('nfdif', 'float32'),
+    ('nflpi0_100nflpif', 'float32'),
+    ('nflche_100nfgragm', 'float32'),
+])
+
