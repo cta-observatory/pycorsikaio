@@ -33,7 +33,7 @@ run_header_dtype_65 = np.dtype([
 ])
 
 
-run_header_dtype_75 = np.dtype([
+run_header_dtype_74 = np.dtype([
     ('run_header', 'S4'),
     ('run_number', 'float32'),
     ('date', 'float32'),
@@ -73,3 +73,5 @@ run_header_dtype_75 = np.dtype([
     ('nflche_100nfgragm', 'float32'),
 ])
 
+# luckily run header did not change
+run_header_dtype_75 = run_header_dtype_74

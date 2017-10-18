@@ -1,8 +1,17 @@
 import numpy as np
 import struct
 
-from .run_header import run_header_dtype_65, run_header_dtype_75
-from .event_header import event_header_dtype_65, event_header_dtype_75
+from .run_header import (
+    run_header_dtype_65,
+    run_header_dtype_74,
+    run_header_dtype_75,
+)
+from .event_header import (
+    event_header_dtype_65,
+    event_header_dtype_74,
+    event_header_dtype_75,
+)
+
 from ..constants import RUNH_VERSION_POSITION, EVTH_VERSION_POSITION
 
 __all__ = [
@@ -12,11 +21,13 @@ __all__ = [
 
 run_header_types = {
     6.5: run_header_dtype_65,
+    7.4: run_header_dtype_74,
     7.5: run_header_dtype_75,
 }
 
 event_header_types = {
     6.5: event_header_dtype_65,
+    7.4: event_header_dtype_74,
     7.5: event_header_dtype_75,
 }
 

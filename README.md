@@ -18,6 +18,6 @@ areas and sensitivity.
 But we plan to add support for more subblock types in the future.
 
 Because the output format changed with the CORSIKA versions, 
-right now, only CORSIKA 6.5 and 7.56 are supported.
+right now, only CORSIKA 6.5, 7.4 and 7.5 are supported.
 
 
