@@ -1,5 +1,3 @@
-import numpy as np
-
 test_files = (
     'tests/resources/mmcs65',
     'tests/resources/corsika74100'

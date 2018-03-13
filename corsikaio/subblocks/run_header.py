@@ -19,7 +19,7 @@ run_header_dtype_65 = np.dtype([
     ('energy_cutoff_photons', 'float32'),  # 24
     ('physical_constants_and_interaction_flags', 'float32', (50, )),  # 25 - 74
     ('unused', 'float32', (20, )),  # 75 - 94
-    ('cka', 'float32', (40, )),  # 94 - 134
+    ('cka', 'float32', (40, )),  # 95 - 134
     ('ceta', 'float32', (5, )),  # 135 - 139
     ('cstrba', 'float32', (11, )),  # 140 - 150
     ('unused2', 'float32', (104, )),  # 150 - 254
