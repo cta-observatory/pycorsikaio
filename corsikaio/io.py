@@ -59,7 +59,7 @@ def read_corsika_headers(inputfile):
     run_header = parse_run_header(byte_data)
 
     # Read Eventheader
-    event_header_data = b''
+    event_header_data = bytearray()
     while True:
         byte_data = read_block(inputfile, buffer_size)
 
@@ -70,7 +70,7 @@ def read_corsika_headers(inputfile):
         if byte_data[0:4] != b'EVTH':
             continue
 
-        event_header_data += byte_data
+        event_header_data.extend(byte_data)
 
     event_headers = parse_event_header(event_header_data)
 

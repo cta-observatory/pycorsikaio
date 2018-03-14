@@ -49,4 +49,4 @@ def test_read_headers():
         with open(path, 'rb') as f:
             run_header, event_headers = read_corsika_headers(f)
 
-        assert round(float(run_header['version'][0]), 2) == version
+        assert round(float(run_header['version']), 2) == version

@@ -1,8 +1,15 @@
 import gzip
-from collections import defaultdict
+import numpy as np
+from numpy.lib.recfunctions import append_fields
+from collections import namedtuple
 
-from .subblocks import parse_run_header, parse_event_header
+from .subblocks import parse_run_header, parse_event_header, parse_cherenkov_photons
 from .io import read_block, read_buffer_size
+
+from .constants import BLOCK_SIZE_BYTES
+
+Event = namedtuple('Event', ['header', 'data', 'longitudinal', 'end'])
+PhotonEvent = namedtuple('PhotonEvent', ['header', 'photons', 'longitudinal', 'end'])
 
 
 def is_gzip(f):
@@ -15,7 +22,9 @@ def is_gzip(f):
 
 
 class CorsikaFile:
+
     def __init__(self, path):
+        self.EventClass = Event
 
         self._f = open(path, 'rb')
         if is_gzip(self._f):
@@ -28,12 +37,13 @@ class CorsikaFile:
             raise ValueError('File does not start with b"RUNH"')
 
         self.run_header = parse_run_header(runh_bytes)
-        self.version = round(float(self.run_header['version'][0]), 4)
+        self.version = round(float(self.run_header['version']), 4)
 
     def __next__(self):
         block = self.read_block()
 
-        if block[:4] == b'RUNE':
+        if block[:4] == b'RUNE' or len(block) < BLOCK_SIZE_BYTES:
+            self._finished = True
             raise StopIteration()
 
         if block[:4] != b'EVTH':
@@ -42,14 +52,25 @@ class CorsikaFile:
         event_header = parse_event_header(block)
 
         block = self.read_block()
-        data_blocks = defaultdict(list)
+        data_bytes = bytearray()
+        long_blocks = []
         while block[:4] != b'EVTE':
-            data_blocks[block[:4]].append(block)
+            if block[:4] == b'LONG':
+                long_blocks.append(block)
+            else:
+                data_bytes.extend(block)
             block = self.read_block()
 
         event_end = block
 
-        return event_header, data_blocks, event_end
+        data = self.parse_data_blocks(data_bytes)
+
+        return self.EventClass(event_header, data, long_blocks, event_end)
+
+    @classmethod
+    def parse_data_blocks(cls, data_bytes):
+        array = np.frombuffer(data_bytes, dtype='float32').reshape(-1, 7)
+        return array[np.any(array != 0, axis=1)]
 
     def __iter__(self):
         return self
@@ -88,3 +109,30 @@ class CorsikaFile:
 
     def close(self):
         self._f.close()
+
+
+class CorsikaCherenkovFile(CorsikaFile):
+
+    def __init__(self, path, mmcs=False):
+        super().__init__(path)
+
+        self.EventClass = PhotonEvent
+        self.mmcs = mmcs
+
+    def parse_data_blocks(self, data_bytes):
+        photons = parse_cherenkov_photons(data_bytes)
+
+        # mmcs encodes wavelength and mother particle in the n column
+        if self.mmcs:
+            photons = append_fields(
+                photons,
+                names=['wavelength', 'mother_particle'],
+                data=[
+                    photons['n_photons'] % 1000,
+                    photons['n_photons'] // 100000
+                ],
+                usemask=False,
+                asrecarray=False,
+            )
+            photons['n_photons'] = 1.0
+        return photons

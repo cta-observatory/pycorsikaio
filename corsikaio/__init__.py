@@ -5,6 +5,7 @@ from .io import (
 )
 
 from .subblocks import parse_run_header, parse_event_header, get_version
+from .file import CorsikaFile, CorsikaCherenkovFile
 
 
 __all__ = [
@@ -13,5 +14,7 @@ __all__ = [
     'read_block',
     'get_version',
     'parse_run_header',
-    'parse_event_header'
+    'parse_event_header',
+    'CorsikaFile',
+    'CorsikaCherenkovFile',
 ]
