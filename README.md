@@ -1,4 +1,4 @@
-# pycorsikaio
+# pycorsikaio [![Build Status](https://travis-ci.org/fact-project/pycorsikaio.svg?branch=master)](https://travis-ci.org/fact-project/pycorsikaio)
 
 
 Python module to read the CORSIKA binary output files.
