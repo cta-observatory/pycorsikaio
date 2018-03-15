@@ -3,7 +3,14 @@ import numpy as np
 from numpy.lib.recfunctions import append_fields
 from collections import namedtuple
 
-from .subblocks import parse_run_header, parse_event_header, parse_cherenkov_photons
+from .subblocks import (
+    parse_run_header,
+    parse_event_header,
+    parse_event_end,
+    parse_cherenkov_photons,
+    parse_longitudinal,
+)
+from .subblocks.longitudinal import longitudinal_header_dtype
 from .io import read_block, read_buffer_size
 
 from .constants import BLOCK_SIZE_BYTES
@@ -53,19 +60,22 @@ class CorsikaFile:
 
         block = self.read_block()
         data_bytes = bytearray()
-        long_blocks = []
+        long_bytes = bytearray()
+
         while block[:4] != b'EVTE':
+
             if block[:4] == b'LONG':
-                long_blocks.append(block)
+                long_bytes.extend(block[longitudinal_header_dtype.itemsize // 4 + 1:])
             else:
                 data_bytes.extend(block)
+
             block = self.read_block()
 
-        event_end = block
-
+        event_end = parse_event_end(block)
         data = self.parse_data_blocks(data_bytes)
+        longitudinal = parse_longitudinal(long_bytes)
 
-        return self.EventClass(event_header, data, long_blocks, event_end)
+        return self.EventClass(event_header, data, longitudinal, event_end)
 
     @classmethod
     def parse_data_blocks(cls, data_bytes):
