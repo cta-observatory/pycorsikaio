@@ -12,12 +12,25 @@ pip install https://github.com/fact-project/pycorsikaio/archive/master.tar.gz
 
 ## Features
 
-Right now, only parsing of the run and event headers is supported,
-as this was most urgently needed for e.g. calculation of effective
-areas and sensitivity.
-But we plan to add support for more subblock types in the future.
+Load CORSIKA binary particle or cherenkov data files using python and numpy.
 
-Because the output format changed with the CORSIKA versions, 
-right now, only CORSIKA 6.5, 7.4 and 7.5 are supported.
+Also supports MMCS 6.5
+
+```python
+from corsikaio import CorsikaCherenkovFile
+import matplotlib.pyplot as plt
+
+
+with CorsikaCherenkovFile('cer000001') as f:
+    print(f.run_header['run_number'])
+    print(f.version)
+
+    for e in f:
+        print(e.header['total_energy'])
+        
+        plt.scatter(e.photons['x'], e.photons['y'])
+        plt.show()
+```
+
 
 
