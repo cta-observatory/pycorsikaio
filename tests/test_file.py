@@ -55,3 +55,14 @@ def test_run_end():
 
     with CorsikaCherenkovFile('tests/resources/corsika75700', mmcs=True) as f:
         assert f.run_end['n_events'] == 10
+
+
+def test_particle_longi():
+    from corsikaio import CorsikaParticleFile
+
+    with CorsikaParticleFile('tests/resources/corsika757_particle') as f:
+        assert f.run_end['n_events'] == 10
+
+        e = next(f)
+
+        assert e.header['event_number'] == 1

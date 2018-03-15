@@ -7,6 +7,7 @@ from .subblocks import (
     parse_event_header,
     parse_event_end,
     parse_cherenkov_photons,
+    parse_particle_data,
     parse_longitudinal,
     parse_run_end,
     get_version,
@@ -19,6 +20,7 @@ from .constants import BLOCK_SIZE_BYTES, EVTH_VERSION_POSITION
 
 Event = namedtuple('Event', ['header', 'data', 'longitudinal', 'end'])
 PhotonEvent = namedtuple('PhotonEvent', ['header', 'photons', 'longitudinal', 'end'])
+ParticleEvent = namedtuple('ParticleEvent', ['header', 'particles', 'longitudinal', 'end'])
 
 
 def is_gzip(f):
@@ -92,7 +94,7 @@ class CorsikaFile:
         while block[:4] != b'EVTE':
 
             if block[:4] == b'LONG':
-                long_bytes.extend(block[longitudinal_header_dtype.itemsize // 4 + 1:])
+                long_bytes.extend(block[longitudinal_header_dtype.itemsize:])
             else:
                 data_bytes.extend(block)
 
@@ -179,3 +181,13 @@ class CorsikaCherenkovFile(CorsikaFile):
         mmcs['mother_particle'] = photons['n_photons'] // 100000
 
         return mmcs
+
+
+class CorsikaParticleFile(CorsikaFile):
+
+    def __init__(self, path):
+        super().__init__(path)
+        self.EventClass = ParticleEvent
+
+    def parse_data_blocks(self, data_bytes):
+        return parse_particle_data(data_bytes)
