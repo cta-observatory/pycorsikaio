@@ -10,6 +10,8 @@ setup(
     author_email='maximilian.noethe@tu-dortmund.de',
     license='MIT',
     packages=find_packages(),
+    tests_require=['pytest'],
+    setup_requires=['pytest-runner'],
     install_requires=[
         'numpy',
     ],
