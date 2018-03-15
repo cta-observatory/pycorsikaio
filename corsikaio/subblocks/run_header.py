@@ -1,4 +1,6 @@
 import numpy as np
+from collections import defaultdict
+import warnings
 
 
 run_header_dtype_65 = np.dtype([
@@ -19,7 +21,7 @@ run_header_dtype_65 = np.dtype([
     ('energy_cutoff_photons', 'float32'),  # 24
     ('physical_constants_and_interaction_flags', 'float32', (50, )),  # 25 - 74
     ('unused', 'float32', (20, )),  # 75 - 94
-    ('cka', 'float32', (40, )),  # 94 - 134
+    ('cka', 'float32', (40, )),  # 95 - 134
     ('ceta', 'float32', (5, )),  # 135 - 139
     ('cstrba', 'float32', (11, )),  # 140 - 150
     ('unused2', 'float32', (104, )),  # 150 - 254
@@ -33,7 +35,7 @@ run_header_dtype_65 = np.dtype([
 ])
 
 
-run_header_dtype_74 = np.dtype([
+run_header_dtype_7x = np.dtype([
     ('run_header', 'S4'),  # 1
     ('run_number', 'float32'),  # 2
     ('date', 'float32'),  # 3
@@ -73,5 +75,14 @@ run_header_dtype_74 = np.dtype([
     ('nflche_100nfgragm', 'float32'),
 ])
 
-# luckily run header did not change
-run_header_dtype_75 = run_header_dtype_74
+
+def warn():
+    warnings.warn('Version unknown, using run header definition of version 7.6')
+    return run_header_dtype_7x
+
+
+run_header_types = defaultdict(warn)
+run_header_types[6.5] = run_header_dtype_65
+run_header_types[7.4] = run_header_dtype_7x
+run_header_types[7.5] = run_header_dtype_7x
+run_header_types[7.6] = run_header_dtype_7x

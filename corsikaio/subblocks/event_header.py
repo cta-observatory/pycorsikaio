@@ -1,5 +1,6 @@
 import numpy as np
-
+import warnings
+from collections import defaultdict
 
 event_header_dtype_65 = np.dtype([
     ('event_header', 'S4'),  # 1
@@ -187,7 +188,7 @@ event_header_dtype_74 = np.dtype([
 ])
 
 
-event_header_dtype_75 = np.dtype([
+event_header_dtype_7x = np.dtype([
     ('event_header', 'S4'),
     ('event_number', 'float32'),
     ('particle_id', 'float32'),
@@ -299,3 +300,15 @@ event_header_dtype_75 = np.dtype([
     ('icecube_pipe_flag', 'float32'),
     ('unused', 'float32', 51),
 ])
+
+
+def warn():
+    warnings.warn('Version unknown, using event header definition of version 7.6')
+    return event_header_dtype_7x
+
+
+event_header_types = defaultdict(warn)
+event_header_types[6.5] = event_header_dtype_65
+event_header_types[7.4] = event_header_dtype_74
+event_header_types[7.5] = event_header_dtype_7x
+event_header_types[7.6] = event_header_dtype_7x
