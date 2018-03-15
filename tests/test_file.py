@@ -35,7 +35,6 @@ def test_headers():
     with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
         run_header, event_headers, run_end = f.read_headers()
 
-
     assert len(event_headers) == 1500
     assert run_end['n_events'] == 1500
 
@@ -46,3 +45,13 @@ def test_accidental_evth():
         run_header, event_headers, run_end = f.read_headers()
         assert len(event_headers) == 1500
 
+
+def test_run_end():
+
+    from corsikaio import CorsikaCherenkovFile
+
+    with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
+        assert f.run_end['n_events'] == 1500
+
+    with CorsikaCherenkovFile('tests/resources/corsika75700', mmcs=True) as f:
+        assert f.run_end['n_events'] == 10

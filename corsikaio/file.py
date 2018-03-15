@@ -47,13 +47,38 @@ class CorsikaFile:
 
         self.run_header = parse_run_header(runh_bytes)[0]
         self.version = round(float(self.run_header['version']), 4)
+        self._run_end = None
+
+    @property
+    def run_end(self):
+        if self._run_end is None:
+            pos = self._f.tell()
+
+            if self._buffer_size is None:
+                self._f.seek(0, 2)
+            else:
+                self._f.seek(-4, 2)
+
+            self._f.seek(-BLOCK_SIZE_BYTES, 1)
+            block = self.read_block()
+            while block[:4] != b'RUNE':
+                self._f.seek(-2 * BLOCK_SIZE_BYTES, 1)
+                block = self.read_block()
+
+            self._run_end = parse_run_end(block)[0]
+            self._f.seek(pos)
+
+        return self._run_end
 
     def __next__(self):
         block = self.read_block()
 
-        if block[:4] == b'RUNE' or len(block) < BLOCK_SIZE_BYTES:
-            self._finished = True
+        if block[:4] == b'RUNE':
+            self._run_end = parse_run_end(block)
             raise StopIteration()
+
+        if len(block) < BLOCK_SIZE_BYTES:
+            raise StopIteration
 
         if block[:4] != b'EVTH':
             raise IOError('EVTH block expected but found {}'.format(block[:4]))
@@ -97,7 +122,7 @@ class CorsikaFile:
 
         while block:
             if block[:4] == b'RUNE':
-                run_end = parse_run_end(block)
+                self._run_end = parse_run_end(block)[0]
                 break
 
             if block[:4] == b'EVTH' and get_version(block, EVTH_VERSION_POSITION) == self.version:
@@ -116,7 +141,7 @@ class CorsikaFile:
 
         event_headers = parse_event_header(event_header_data)
 
-        return self.run_header, event_headers, run_end
+        return self.run_header, event_headers, self._run_end
 
     def read_block(self):
         return read_block(self._f, self._buffer_size)
