@@ -1,10 +1,5 @@
 import struct
 
-from .subblocks import (
-    parse_run_header,
-    parse_event_header
-)
-
 from .constants import BLOCK_SIZE_BYTES
 
 

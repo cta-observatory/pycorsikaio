@@ -34,7 +34,7 @@ def parse_run_end(run_end_bytes):
 
 def parse_event_header(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    version = round(version, 1)
+    version = float(str(version)[:3])
     return np.frombuffer(event_header_bytes, dtype=event_header_types[version])
 
 
@@ -44,7 +44,7 @@ def parse_event_end(event_end_bytes):
 
 def get_version(header_bytes, version_pos):
     sl = slice(4 * (version_pos - 1), 4 * version_pos)
-    return round(struct.unpack('f', header_bytes[sl])[0], 2)
+    return round(struct.unpack('f', header_bytes[sl])[0], 4)
 
 
 def parse_data_block(data_block_bytes, dtype):

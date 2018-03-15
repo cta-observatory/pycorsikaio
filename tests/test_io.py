@@ -22,7 +22,6 @@ def test_fortran_raw_file():
     assert len(events) == 10
 
 
-
 def test_read_block():
     from corsikaio.io import read_buffer_size, read_block
 
@@ -50,5 +49,3 @@ def test_versions():
             block = read_block(f, buffer_size)
 
             assert get_version(block, EVTH_VERSION_POSITION) == version
-
-
