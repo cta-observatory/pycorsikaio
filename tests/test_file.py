@@ -10,14 +10,6 @@ def test_version():
         assert f.version == 7.41
 
 
-def test_iter_event_headers():
-    from corsikaio import CorsikaFile
-
-    with CorsikaFile('tests/resources/mmcs65') as f:
-        event_headers = list(f.iter_event_headers())
-        assert len(event_headers) == 1500
-
-
 def test_next():
     from corsikaio import CorsikaFile
 
@@ -35,3 +27,14 @@ def test_cherenkov():
     with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
         event = next(f)
         assert hasattr(event, 'photons')
+
+
+def test_headers():
+    from corsikaio import CorsikaCherenkovFile
+
+    with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
+        run_header, event_headers, run_end = f.read_headers()
+
+
+    assert len(event_headers) == 1500
+    assert run_end['n_events'] == 1500

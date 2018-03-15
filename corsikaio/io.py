@@ -48,29 +48,3 @@ def read_block(f, buffer_size=None):
             f.read(8)
 
     return f.read(BLOCK_SIZE_BYTES)
-
-
-def read_corsika_headers(inputfile):
-    inputfile.seek(0)
-
-    buffer_size = read_buffer_size(inputfile)
-    byte_data = read_block(inputfile, buffer_size)
-    run_header = parse_run_header(byte_data)
-
-    # Read Eventheader
-    event_header_data = bytearray()
-    while True:
-        byte_data = read_block(inputfile, buffer_size)
-
-        # No more Shower in file
-        if byte_data[0:4] == b'RUNE':
-            break
-
-        if byte_data[0:4] != b'EVTH':
-            continue
-
-        event_header_data.extend(byte_data)
-
-    event_headers = parse_event_header(event_header_data)
-
-    return run_header, event_headers

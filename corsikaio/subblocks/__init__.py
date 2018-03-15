@@ -2,8 +2,9 @@ import numpy as np
 import struct
 
 from .run_header import run_header_types
-from .event_header import event_header_types
+from .run_end import run_end_dtype
 
+from .event_header import event_header_types
 from .event_end import event_end_dtype
 
 from .data import cherenkov_photons_dtype, particle_data_dtype
@@ -24,17 +25,21 @@ def parse_run_header(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
     # get corsika minor version (Truncate the float after first digit)
     version = float(str(version)[:3])
-    return np.frombuffer(run_header_bytes, dtype=run_header_types[version])[0]
+    return np.frombuffer(run_header_bytes, dtype=run_header_types[version])
+
+
+def parse_run_end(run_end_bytes):
+    return np.frombuffer(run_end_bytes, dtype=run_end_dtype)
 
 
 def parse_event_header(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
     version = round(version, 1)
-    return np.frombuffer(event_header_bytes, dtype=event_header_types[version])[0]
+    return np.frombuffer(event_header_bytes, dtype=event_header_types[version])
 
 
 def parse_event_end(event_end_bytes):
-    return np.frombuffer(event_end_bytes, dtype=event_end_dtype)[0]
+    return np.frombuffer(event_end_bytes, dtype=event_end_dtype)
 
 
 def get_version(header_bytes, version_pos):
