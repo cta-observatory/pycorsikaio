@@ -35,7 +35,8 @@ def read_block(f, buffer_size=None):
 
     Under some conditions, CORSIKA writes output as FORTRAN
     raw file format. This means, there is a 4-byte unsigned
-    integer at each
+    integer (the buffer size)
+    before and after each block, which has to be skipped.
     '''
     pos = f.tell()
 
@@ -43,9 +44,7 @@ def read_block(f, buffer_size=None):
         if pos == 0:
             f.seek(4)
 
-        pos -= 4
-
-        if pos % buffer_size == 0:
+        if (pos + 4) % (buffer_size + 8) == 0:
             f.read(8)
 
     return f.read(BLOCK_SIZE_BYTES)
