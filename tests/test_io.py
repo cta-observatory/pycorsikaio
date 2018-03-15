@@ -14,6 +14,15 @@ def test_fortran_raw():
         assert read_buffer_size(f) == 22932  # standard CORSIKA buffer size
 
 
+def test_fortran_raw_file():
+    from corsikaio import CorsikaFile
+
+    events = [e for e in CorsikaFile('tests/resources/corsika75700')]
+
+    assert len(events) == 10
+
+
+
 def test_read_block():
     from corsikaio import read_buffer_size, read_block
 
