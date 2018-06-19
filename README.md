@@ -1,4 +1,4 @@
-# pycorsikaio [![Build Status](https://travis-ci.org/fact-project/pycorsikaio.svg?branch=master)](https://travis-ci.org/fact-project/pycorsikaio)
+# pycorsikaio [![Build Status](https://travis-ci.org/fact-project/pycorsikaio.svg?branch=master)](https://travis-ci.org/fact-project/pycorsikaio) [![PyPI version](https://badge.fury.io/py/corsikaio.svg)](https://badge.fury.io/py/corsikaio)
 
 
 Python module to read the CORSIKA binary output files.
@@ -7,7 +7,7 @@ Python module to read the CORSIKA binary output files.
 
 Run
 ```
-pip install https://github.com/fact-project/pycorsikaio/archive/master.tar.gz
+pip install corsikaio
 ```
 
 ## Features
