@@ -1,20 +1,18 @@
-import numpy as np
+from .dtypes import build_dtype, Field
 
 
-event_end_dtype = np.dtype([
-    ('event_end', 'S4'),
-    ('event_number', 'float32'),
-    ('n_photons_weighted', 'float32'),
-    ('n_electrons_weighted', 'float32'),
-    ('n_hadrons_weighted', 'float32'),
-    ('n_muons_weighted', 'float32'),
-    ('n_particles_written', 'float32'),
-    ('unused', 'float32', 255),
-    ('chi_square_longitudinal', 'float32'),
-    ('n_photons_written', 'float32'),
-    ('n_electrons_written', 'float32'),
-    ('n_hadrons_written', 'float32'),
-    ('n_muons_written', 'float32'),
-    ('n_em_particles_preshower', 'float32'),
-    ('unused2', 'float32', 5),
+event_end_dtype = build_dtype([
+    Field(1, 'event_end', dtype='S4'),
+    Field(2, 'event_number'),
+    Field(3, 'n_photons_weighted'),
+    Field(4, 'n_electrons_weighted'),
+    Field(5, 'n_hadrons_weighted'),
+    Field(6, 'n_muons_weighted'),
+    Field(7, 'n_particles_written'),
+    Field(262, 'chi_square_longitudinal'),
+    Field(263, 'n_photons_written'),
+    Field(264, 'n_electrons_written'),
+    Field(265, 'n_hadrons_written'),
+    Field(266, 'n_muons_written'),
+    Field(267, 'n_em_particles_preshower'),
 ])
