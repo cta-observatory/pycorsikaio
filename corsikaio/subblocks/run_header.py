@@ -35,6 +35,9 @@ run_header_dtype_65 = np.dtype([
 ])
 
 
+# the corsika (up to and including version 7.69) user guide has an error here
+# confirmed via mail by T. Pierog. NSHOW is at position 93, not 94 as stated
+# in the manual
 run_header_dtype_7x = np.dtype([
     ('run_header', 'S4'),  # 1
     ('run_number', 'float32'),  # 2
@@ -51,18 +54,19 @@ run_header_dtype_7x = np.dtype([
     ('energy_cutoff_muons', 'float32'),  # 22
     ('energy_cutoff_electrons', 'float32'),  # 23
     ('energy_cutoff_photons', 'float32'),  # 24
-    ('physical_constants_and_interaction_flags', 'float32', (50, )), # 24 - 74
+    ('physical_constants_and_interaction_flags', 'float32', (50, )),  # 24 - 74
     ('inclined_observation_plange_x', 'float32'),  # 75
     ('inclined_observation_plange_y', 'float32'),  # 76
     ('inclined_observation_plange_z', 'float32'),  # 77
     ('inclined_observation_plange_theta', 'float32'),  # 78
     ('inclined_observation_plange_phi', 'float32'),  # 79
-    ('unused', 'float32', (14, )),  # 79 - 93
-    ('n_showers', 'float32'),  # 94
+    ('unused', 'float32', (13, )),  # 79 - 92
+    ('n_showers', 'float32'),  # 93
+    ('unused2', 'float32'),  # 94
     ('cka', 'float32', (40, )),
     ('ceta', 'float32', (5, )),
     ('cstrba', 'float32', (11, )),
-    ('unused2', 'float32', (97, )),
+    ('unused3', 'float32', (97, )),
     ('x_scatter', 'float32'),
     ('y_scatter', 'float32'),
     ('hlay', 'float32', (5, )),
