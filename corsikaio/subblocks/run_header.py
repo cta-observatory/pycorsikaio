@@ -79,7 +79,7 @@ run_header_dtype_65 = build_dtype(run_header_fields_65)
 
 
 def warn():
-    warnings.warn('Version unknown, using run header definition of version 7.6')
+    warnings.warn('Version unknown, using run header definition of version 7.x')
     return run_header_dtype_7x
 
 
@@ -88,3 +88,4 @@ run_header_types[6.5] = run_header_dtype_65
 run_header_types[7.4] = run_header_dtype_7x
 run_header_types[7.5] = run_header_dtype_7x
 run_header_types[7.6] = run_header_dtype_7x
+run_header_types[7.7] = run_header_dtype_7x

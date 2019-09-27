@@ -301,7 +301,7 @@ event_header_dtype_7x = build_dtype([
 
 
 def warn():
-    warnings.warn('Version unknown, using event header definition of version 7.6')
+    warnings.warn('Version unknown, using event header definition of version 7.x')
     return event_header_dtype_7x
 
 
@@ -310,3 +310,4 @@ event_header_types[6.5] = event_header_dtype_65
 event_header_types[7.4] = event_header_dtype_74
 event_header_types[7.5] = event_header_dtype_7x
 event_header_types[7.6] = event_header_dtype_7x
+event_header_types[7.7] = event_header_dtype_7x
