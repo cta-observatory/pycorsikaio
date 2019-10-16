@@ -15,6 +15,9 @@ def build_dtype(fields, itemsize=4 * 273):
     for field in fields:
         dt['names'].append(field.name)
         dt['offsets'].append((field.position - 1) * 4)
-        dt['formats'].append((field.dtype, field.shape))
+        if field.shape != 1:
+            dt['formats'].append((field.dtype, field.shape))
+        else:
+            dt['formats'].append(field.dtype)
 
     return np.dtype(dict(**dt))
