@@ -94,9 +94,9 @@ class CorsikaFile:
         while block[:4] != b'EVTE':
 
             if block[:4] == b'LONG':
-                long_bytes.extend(block[longitudinal_header_dtype.itemsize:])
+                long_bytes += block[longitudinal_header_dtype.itemsize:]
             else:
-                data_bytes.extend(block)
+                data_bytes += block
 
             block = self.read_block()
 
@@ -131,7 +131,7 @@ class CorsikaFile:
                 if not end_found:
                     raise IOError('Expected EVTE block before next EVTH')
 
-                event_header_data.extend(block)
+                event_header_data += block
 
                 end_found = False
             elif block[:4] == b'EVTE':
