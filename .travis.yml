@@ -1,7 +1,8 @@
 language: python
 
 python:
-  - '3.6'
+  - '3.7'
+  - '3.8'
 
 before_install:
   - pip install --upgrade pip
@@ -14,9 +15,12 @@ script:
 
 deploy:
   provider: pypi
-  user: fact-deploybot
+  user: __token__
+  distributions: sdist
+  skip_cleanup: true
   password:
-    secure: ZhdkRQuv8w91qofNu7Mr8oyvTS3uH1uUFnecemLtNebWa90ykeoOlTmD31fcgUAFLM9DSbu/i0qAItS8/pAzCozRqMwchetD7C254Q2kI/tw7xy/dbOmBcYrTW4WGWeRSALR4wHVPDirScYttugjXCiGYAg52+j1YvcIoVZCL7JSYtXPeIq5bdyLaxnv3YYxcgT61Dp2v5lH3GbszXfDUdKM15d9BuDcya6lx/qzqDstIqInbjaEajRnzvVX1pVNTxX91IkGvB5rl29GlsilhRqMOmbacJpWJH/H6rbeqsns4X+AeM7EO7/rRekake6hvatI2MZFSoDdNgne4JKPZTSNe+u3eRvBkC4OFbnUVOn6Ie5SC28Boyc47m3N4kYQqP1vjofjmhmqUGBjPXnxvH4wIfpOcuGpSH29K3qvTV4enAR70W/eiXn77/sGftFG/PEk7a/sbBN2nAIPKGNkWeDWLDK+s7htQsJ8AQ/uiIfjOy/V18mpHFTxhNpZCHR001M5jT83/zmYcXCWSisMsZAlZ4E8ra/4heuTvNfeuylT5lTcRx3UcjUYTNuHVCibbx89hbAoxx+OSLrzKJkwrN4A++J0E08PDqhMDelKMZBcAAZlzm4MQ5AJQUcezvhku/dgVumbycpVIjXzbkR9AyY5Q15F8KumPXQmB5UdaAM=
+    secure: "i6pq6m38O9GIzFHlrJiKszQRge0bfeLF9fIEatbiow4/nMeaFenGTHJbjr7W3qvUzeDZ8Icbd1XYt5SuZxhlCyTdsb7E/W1XqoPHSJUfZwnuBvHxN3wfbO2t2oliiMpBBOt5xqF7GUGhgKOEVVZJj2NCVGjMbmaCjr5Ge+sPCNg098SlK+XL278l9YR1Kaveq9AzRyTzN4k8NuVeRAgGZYuRTEDIpTg9gnlJR4AIRSAYVE3MOP3SJOQWXpe8M2Qhc4slG9wKiCZXc9Crchd5FYbKqCIPLDsihy1aUzi7SZ2B7h1ldPKBkk3+x0IDmrgn7ukZZoHQX1TP4NCrMCqDIXw95m7zMN+By6vJomrka9eoKo0xmpfvHfalBC9ULuOaYin2FQbp4jCEP8feoO05mEVwPF6As4u/LypPQ83uG7JnQ2VD0pvgihUQ0Glfj32ZmInKRL7sqpx9CG59eLNO6CkANEaPMGyFZsyJnvMN0oOx8i1nK3et8UzbFs9uqG5yH/GGFVgyOxFc1niMLBsaaqfHPPc6eVygtMb87FjvG4RXAiLsc7yqUX640vw9WzuGL2RNxmDrSJ+bed/gDthVBr72LjZt5bcQF6EFkJQsaF+CyT2mMwwbezJ3xQ0NU0dIBQkH0EPGBiHrJdiipKOol1IqNF01nUQgUIaf9lmTg34="
   on:
     tags: true
     branch: master
+    condition: $TRAVIS_PYTHON_VERSION = "3.7"
