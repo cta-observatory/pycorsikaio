@@ -1,20 +1,22 @@
 import gzip
-import tempfile
 
 
-def test_is_gzip():
-    from corsikaio.file import is_gzip
+def test_is_not_gzip(tmp_path):
+    from corsikaio.io import is_gzip
 
-    with tempfile.NamedTemporaryFile() as tmp:
-        with open(tmp.name, 'wb') as f:
-            f.write(b'Hello World')
+    path = tmp_path / "no_gzip_file"
 
-        with open(tmp.name, 'rb') as f:
-            assert not is_gzip(f)
+    with open(path, 'wb') as f:
+        f.write(b'Hello World')
 
-    with tempfile.NamedTemporaryFile() as tmp:
-        with gzip.open(tmp.name, 'wb') as f:
-            f.write(b'Hello World')
+    assert not is_gzip(path)
 
-        with open(tmp.name, 'rb') as f:
-            assert is_gzip(f)
+def test_is_gzip(tmp_path):
+    from corsikaio.io import is_gzip
+
+    path = tmp_path / "gzip_file"
+
+    with gzip.open(path, 'wb') as f:
+        f.write(b'Hello World')
+
+    assert is_gzip(path)

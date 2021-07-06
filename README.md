@@ -1,4 +1,4 @@
-# pycorsikaio [![Build Status](https://travis-ci.com/fact-project/pycorsikaio.svg?branch=master)](https://travis-ci.com/fact-project/pycorsikaio) [![PyPI version](https://badge.fury.io/py/corsikaio.svg)](https://badge.fury.io/py/corsikaio)
+# pycorsikaio [![CI](https://github.com/cta-observatory/pycorsikaio/actions/workflows/ci.yml/badge.svg)](https://github.com/cta-observatory/pycorsikaio/actions/workflows/ci.yml) [![PyPI version](https://badge.fury.io/py/corsikaio.svg)](https://badge.fury.io/py/corsikaio)
 
 
 Python module to read the CORSIKA binary output files.
