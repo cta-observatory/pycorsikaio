@@ -1,4 +1,3 @@
-import gzip
 import numpy as np
 from collections import namedtuple
 
@@ -14,7 +13,7 @@ from .subblocks import (
 )
 from .subblocks.longitudinal import longitudinal_header_dtype
 from .subblocks.data import mmcs_cherenkov_photons_dtype
-from .io import read_block, read_buffer_size
+from .io import read_block, read_buffer_size, open_compressed
 
 from .constants import BLOCK_SIZE_BYTES, EVTH_VERSION_POSITION
 
@@ -23,25 +22,14 @@ PhotonEvent = namedtuple('PhotonEvent', ['header', 'photons', 'longitudinal', 'e
 ParticleEvent = namedtuple('ParticleEvent', ['header', 'particles', 'longitudinal', 'end'])
 
 
-def is_gzip(f):
-    pos = f.tell()
-    f.seek(0)
-    b1, b2 = f.read(2)
-    f.seek(pos)
-
-    return (b1 == 0x1f) and (b2 == 0x8b)
-
 
 class CorsikaFile:
 
     def __init__(self, path):
         self.EventClass = Event
 
-        self._f = open(path, 'rb')
-        if is_gzip(self._f):
-            self._f = gzip.open(path)
-
-        self._buffer_size = read_buffer_size(self._f)
+        self._buffer_size = read_buffer_size(path)
+        self._f = open_compressed(path)
 
         runh_bytes = self.read_block()
         if not runh_bytes[:4] == b'RUNH':

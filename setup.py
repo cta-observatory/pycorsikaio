@@ -5,9 +5,14 @@ with open('README.md') as f:
     long_description = f.read()
 
 
+extras = {
+    'zstd': ['zstandard'],
+    'tests': ['pytest'],
+}
+extras['all'] = list({dep for deps in extras.values() for dep in deps})
+
 setup(
     name='corsikaio',
-    version='0.2.4.post1',
     description='Reader for corsika binary output files using numpy',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -18,6 +23,8 @@ setup(
     packages=find_packages(),
     tests_require=['pytest'],
     setup_requires=['pytest-runner'],
+    extras_require=extras,
+    python_requires='>=3.6',
     install_requires=[
         'numpy',
     ],

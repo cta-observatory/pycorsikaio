@@ -8,10 +8,10 @@ before_install:
   - pip install --upgrade pip
 
 install:
-  - pip install .
+  - pip install '.[all]'
 
 script:
-  - python setup.py test
+  - pytest
 
 deploy:
   provider: pypi
