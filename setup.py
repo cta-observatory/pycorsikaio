@@ -16,7 +16,7 @@ setup(
     description='Reader for corsika binary output files using numpy',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='http://github.com/fact-project/corsikaio',
+    url='http://github.com/cta-observatory/corsikaio',
     author='Maximilian Nöthe',
     author_email='maximilian.noethe@tu-dortmund.de',
     license='MIT',
