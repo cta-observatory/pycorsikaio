@@ -22,7 +22,6 @@ PhotonEvent = namedtuple('PhotonEvent', ['header', 'photons', 'longitudinal', 'e
 ParticleEvent = namedtuple('ParticleEvent', ['header', 'particles', 'longitudinal', 'end'])
 
 
-
 class CorsikaFile:
 
     def __init__(self, path):
@@ -67,18 +66,15 @@ class CorsikaFile:
             self._run_end = parse_run_end(block)
             raise StopIteration()
 
-        if len(block) < BLOCK_SIZE_BYTES:
-            raise StopIteration
-
         if block[:4] != b'EVTH':
             raise IOError('EVTH block expected but found {}'.format(block[:4]))
 
         event_header = parse_event_header(block)[0]
 
-        block = self.read_block()
         data_bytes = bytearray()
         long_bytes = bytearray()
 
+        block = self.read_block()
         while block[:4] != b'EVTE':
 
             if block[:4] == b'LONG':
