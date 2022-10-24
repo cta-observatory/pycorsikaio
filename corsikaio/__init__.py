@@ -7,6 +7,7 @@ __all__ = [
     'CorsikaCherenkovFile',
     'CorsikaParticleFile',
     'as_dict',
+    '__version__',
 ]
 
 
