@@ -1,3 +1,6 @@
+import pytest
+
+
 def test_version():
     from corsikaio import CorsikaFile
 
@@ -66,3 +69,23 @@ def test_particle_longi():
         e = next(f)
 
         assert e.header['event_number'] == 1
+
+
+def test_truncated(tmp_path):
+    '''Test we raise a meaningful error for a truncated file
+
+    Truncated files might happen if corsika crashes or the disk is full.
+
+    Regression test for cta-observatory/pycorsikaio#15
+    '''
+    from corsikaio import CorsikaParticleFile
+    path = tmp_path / "truncated.dat"
+
+    with open("tests/resources/corsika757_particle", "rb") as f:
+        with path.open("wb") as out:
+            out.write(f.read(273 * 10))
+
+    with pytest.raises(IOError, match="seems to be truncated"):
+        with CorsikaParticleFile(path) as f:
+            for _ in f:
+                pass

@@ -70,4 +70,8 @@ def read_block(f, buffer_size=None):
         if (pos + 4) % (buffer_size + 8) == 0:
             f.read(8)
 
-    return f.read(BLOCK_SIZE_BYTES)
+    block = f.read(BLOCK_SIZE_BYTES)
+    if len(block) < BLOCK_SIZE_BYTES:
+        raise IOError("Read less bytes than expected, file seems to be truncated")
+
+    return block
