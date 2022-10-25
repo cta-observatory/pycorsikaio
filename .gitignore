@@ -1,3 +1,5 @@
+_version.py
+
 # Byte-compiled / optimized / DLL files
 .pytest_cache
 __pycache__/

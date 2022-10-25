@@ -1,7 +1,5 @@
 from .file import CorsikaFile, CorsikaCherenkovFile, CorsikaParticleFile
-
-
-__version__ = '0.2.5'
+from .version import __version__
 
 
 __all__ = [
@@ -9,6 +7,7 @@ __all__ = [
     'CorsikaCherenkovFile',
     'CorsikaParticleFile',
     'as_dict',
+    '__version__',
 ]
 
 

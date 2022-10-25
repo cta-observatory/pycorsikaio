@@ -1,0 +1,2 @@
+prune corsikaio/_dev_version
+prune .github
