@@ -1,0 +1,35 @@
+categories:
+  - title: "New features"
+    labels:
+      - "feature"
+  - title: "API Changes"
+    labels:
+      - "breaking change"
+  - title: "Bug Fixes"
+    labels:
+      - "bug"
+  - title: "Refactoring and Optimization"
+    labels:
+      - "optimization"
+      - "refactoring"
+  - title: "Maintenance"
+    labels:
+      - "maintenance"
+
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+change-title-escapes: '\<*_&'
+template: |
+
+  ## Summary
+
+  ...
+
+  ## Contributors
+
+  $CONTRIBUTORS
+
+  ## What has changed since $PREVIOUS_TAG
+
+  Pull-requests containing changes of multiple nature are repeated.
+
+  $CHANGES

@@ -19,7 +19,10 @@ from .constants import BLOCK_SIZE_BYTES, EVTH_VERSION_POSITION
 
 Event = namedtuple('Event', ['header', 'data', 'longitudinal', 'end'])
 PhotonEvent = namedtuple('PhotonEvent', ['header', 'photons', 'longitudinal', 'end'])
-ParticleEvent = namedtuple('ParticleEvent', ['header', 'particles', 'longitudinal', 'end'])
+ParticleEvent = namedtuple(
+    'ParticleEvent',
+    ['header', 'particles', 'longitudinal', 'end']
+)
 
 
 class CorsikaFile:
@@ -111,7 +114,10 @@ class CorsikaFile:
                 self._run_end = parse_run_end(block)[0]
                 break
 
-            if block[:4] == b'EVTH' and get_version(block, EVTH_VERSION_POSITION) == self.version:
+            if (
+                block[:4] == b'EVTH'
+                and get_version(block, EVTH_VERSION_POSITION) == self.version
+            ):
                 if not end_found:
                     raise IOError('Expected EVTE block before next EVTH')
 
