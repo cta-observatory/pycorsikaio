@@ -4,7 +4,7 @@ categories:
       - "feature"
   - title: "API Changes"
     labels:
-      - "Breaking change"
+      - "breaking change"
   - title: "Bug Fixes"
     labels:
       - "bug"
