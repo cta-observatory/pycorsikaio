@@ -123,13 +123,15 @@ event_header_fields_75 = event_header_fields_74 + [
     Field(221, 'icecube_gzip_flag'),
     Field(222, 'icecube_pipe_flag'),
 ]
+event_header_fields_76 = event_header_fields_75.copy()
+event_header_fields_77 = event_header_fields_76.copy()
 
 event_header_dtype_65xxx = build_dtype(event_header_fields_65)
 event_header_dtype_73xxx = build_dtype(event_header_fields_73)
 event_header_dtype_74xxx = build_dtype(event_header_fields_74)
 event_header_dtype_75xxx = build_dtype(event_header_fields_75)
-event_header_dtype_76xxx = build_dtype(event_header_fields_75)
-event_header_dtype_77xxx = build_dtype(event_header_fields_75)
+event_header_dtype_76xxx = build_dtype(event_header_fields_76)
+event_header_dtype_77xxx = build_dtype(event_header_fields_77)
 
 
 def warn():
