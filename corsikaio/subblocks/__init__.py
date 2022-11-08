@@ -14,7 +14,8 @@ from ..constants import RUNH_VERSION_POSITION, EVTH_VERSION_POSITION
 
 __all__ = [
     "parse_event_header",
-    "parse_run_header" "parse_cherenkov_photons",
+    "parse_run_header",
+    "parse_cherenkov_photons",
     "parse_particle_data",
     "parse_longitudinal",
 ]
@@ -65,7 +66,9 @@ def parse_longitudinal(longitudinal_data_bytes):
 
 
 def get_units_from_fields(subblock_fields):
-    """Retrieve units a dictionary from the fields of a file subblock.
+    """Retrieve units as a dictionary from the fields of a file subblock.
+
+    Dimensionless fields are not selected.
 
     Parameters
     ----------
@@ -78,5 +81,5 @@ def get_units_from_fields(subblock_fields):
         Dictionary with field names as keys and
         string representations of units as values.
     """
-    units = {field.name: field.unit for field in subblock_fields}
+    units = {field.name: field.unit for field in subblock_fields if field.unit is not None}
     return units

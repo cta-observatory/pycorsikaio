@@ -134,12 +134,15 @@ event_header_dtype_76xxx = build_dtype(event_header_fields_76)
 event_header_dtype_77xxx = build_dtype(event_header_fields_77)
 
 
-def warn():
-    warnings.warn("Version unknown, using event header definition of version 7.7XXX")
+def warn_dtype():
+    warnings.warn("Version unknown, using event header dtype definition of version 7.7XXX")
     return event_header_dtype_77xxx
 
+def warn_fields():
+    warnings.warn("Version unknown, using event header fields definition of version 7.7XXX")
+    return event_header_fields_77
 
-event_header_fields = defaultdict(warn)
+event_header_fields = defaultdict(warn_fields)
 event_header_fields[6.5] = event_header_fields_65
 event_header_fields[7.3] = event_header_fields_73
 event_header_fields[7.4] = event_header_fields_74
@@ -147,7 +150,7 @@ event_header_fields[7.5] = event_header_fields_75
 event_header_fields[7.6] = event_header_fields_76
 event_header_fields[7.7] = event_header_fields_77
 
-event_header_types = defaultdict(warn)
+event_header_types = defaultdict(warn_dtype)
 event_header_types[6.5] = event_header_dtype_65xxx
 event_header_types[7.3] = event_header_dtype_73xxx
 event_header_types[7.4] = event_header_dtype_74xxx

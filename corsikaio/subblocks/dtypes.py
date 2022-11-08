@@ -4,13 +4,14 @@ import numpy as np
 
 Field = namedtuple("Field", ["position", "name", "unit", "shape", "dtype"])
 
-# set defaults for shape and dtype, this works for the 3 right most attributes
+# set defaults for unit, shape and dtype, this works for the 3 right most attributes
 Field.__new__.__defaults__ = (None, 1, "f4")
 
 
 def build_dtype(fields, itemsize=4 * 273):
     dt = defaultdict(list)
-    dt["itemsize"] = itemsize
+    if itemsize is not None:
+        dt["itemsize"] = itemsize
 
     for field in fields:
         dt["names"].append(field.name)
@@ -22,7 +23,3 @@ def build_dtype(fields, itemsize=4 * 273):
 
     return np.dtype(dict(**dt))
 
-
-def build_data_dtype(fields):
-
-    return np.dtype([(field.name, field.dtype) for field in fields])
