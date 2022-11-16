@@ -13,11 +13,11 @@ from .longitudinal import longitudinal_data_dtype
 from ..constants import RUNH_VERSION_POSITION, EVTH_VERSION_POSITION
 
 __all__ = [
-    'parse_event_header',
-    'parse_run_header'
-    'parse_cherenkov_photons',
-    'parse_particle_data',
-    'parse_longitudinal',
+    "parse_event_header",
+    "parse_run_header",
+    "parse_cherenkov_photons",
+    "parse_particle_data",
+    "parse_longitudinal",
 ]
 
 
@@ -44,7 +44,7 @@ def parse_event_end(event_end_bytes):
 
 def get_version(header_bytes, version_pos):
     sl = slice(4 * (version_pos - 1), 4 * version_pos)
-    return round(struct.unpack('f', header_bytes[sl])[0], 4)
+    return round(struct.unpack("f", header_bytes[sl])[0], 4)
 
 
 def parse_data_block(data_block_bytes, dtype):
@@ -63,3 +63,23 @@ def parse_particle_data(data_block_bytes):
 
 def parse_longitudinal(longitudinal_data_bytes):
     return parse_data_block(longitudinal_data_bytes, longitudinal_data_dtype)
+
+
+def get_units_from_fields(subblock_fields):
+    """Retrieve units as a dictionary from the fields of a file subblock.
+
+    Dimensionless fields are not selected.
+
+    Parameters
+    ----------
+    subblock_fields: list(Field)
+        One of the defined lists of fields.
+
+    Return
+    ------
+    units: dict
+        Dictionary with field names as keys and
+        string representations of units as values.
+    """
+    units = {field.name: field.unit for field in subblock_fields if field.unit is not None}
+    return units
