@@ -172,9 +172,6 @@ class CorsikaCherenkovFile(CorsikaFile):
         self.mmcs = mmcs
 
     def parse_data_blocks(self, data_bytes):
-        if not self.parse_blocks:
-            return _to_floatarray(data_bytes)
-
         photons = parse_cherenkov_photons(data_bytes)
         if not self.mmcs:
             return photons
@@ -198,7 +195,4 @@ class CorsikaParticleFile(CorsikaFile):
         self.EventClass = ParticleEvent
 
     def parse_data_blocks(self, data_bytes):
-        if not self.parse_blocks:
-            return _to_floatarray(data_bytes)
-
         return parse_particle_data(data_bytes)
