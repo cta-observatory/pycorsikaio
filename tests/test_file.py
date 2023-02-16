@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 
 
 def test_version():
@@ -69,6 +70,22 @@ def test_particle_longi():
         e = next(f)
 
         assert e.header['event_number'] == 1
+
+
+def test_particle_no_parse():
+    from corsikaio import CorsikaParticleFile
+
+    with CorsikaParticleFile('tests/resources/corsika757_particle', parse_blocks=False) as f:
+        n_read = 0
+        for e in f:
+            n_read += 1
+            # second entry in header is event_number
+            assert e.header[1] == n_read
+            assert e.header.dtype == np.float32
+            assert len(e.header) == 273
+            assert e.particles.size % 273 == 0
+        assert n_read == 10
+
 
 
 def test_truncated(tmp_path):
