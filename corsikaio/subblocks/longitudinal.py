@@ -30,5 +30,5 @@ longitudinal_data_fields = [
     Field(10, "n_cherenkov", shape="f4"),
 ]
 
-longitudinal_header_dtype = build_dtype(longitudinal_header_fields)
-longitudinal_data_dtype = build_dtype(longitudinal_data_fields)
+longitudinal_header_dtype = build_dtype(longitudinal_header_fields, itemsize=None)
+longitudinal_data_dtype = build_dtype(longitudinal_data_fields, itemsize=None)
