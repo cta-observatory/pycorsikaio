@@ -67,9 +67,9 @@ def test_particle_longi():
     with CorsikaParticleFile('tests/resources/corsika757_particle') as f:
         assert f.run_end['n_events'] == 10
 
-        e = next(f)
-
-        assert e.header['event_number'] == 1
+        for i, e in enumerate(f, start=1):
+            assert e.header['event_number'] == i
+            assert np.all(e.longitudinal['vertical_depth'] == np.arange(20, 801, 20))
 
 
 def test_particle_no_parse():
