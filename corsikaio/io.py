@@ -61,12 +61,10 @@ def iter_blocks(f, default_buffersize=BLOCK_SIZE_BYTES * 100):
 
 
     data = f.read(4)
-    print('FIRST 4 bytes:', data)
     f.seek(0)
     if data == b'RUNH':
         is_fortran_file = False
 
-    print("RECORDS:", is_fortran_file)
 
     
     record = 0
@@ -88,14 +86,12 @@ def iter_blocks(f, default_buffersize=BLOCK_SIZE_BYTES * 100):
 
 
         n_blocks = len(data) // BLOCK_SIZE_BYTES
-        print(n_blocks, BLOCK_SIZE_BYTES * n_blocks - len(data))
         for block in range(n_blocks):
-            print(f'Block {block}, record {record}')
             start = block * BLOCK_SIZE_BYTES
             stop = start + BLOCK_SIZE_BYTES
-            print(start, stop)
             block = data[start:stop]
-            print(block[:4])
+            if len(block) < BLOCK_SIZE_BYTES:
+                raise IOError("Read less bytes than expected, file seems to be truncated")
             yield block
 
         # read trailing record marker

@@ -122,7 +122,8 @@ class CorsikaFile:
         pos = self._f.tell()
         self._f.seek(0)
 
-        block = next(self._block_iter)
+        block_iter = iter_blocks(self._f)
+        block = next(block_iter)
         event_header_data = bytearray()
         end_found = True
 
@@ -144,7 +145,7 @@ class CorsikaFile:
             elif block[:4] == b'EVTE':
                 end_found = True
 
-            block = next(self._block_iter)
+            block = next(block_iter)
 
         self._f.seek(pos)
 
