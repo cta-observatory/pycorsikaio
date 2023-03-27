@@ -13,7 +13,7 @@ from .subblocks import (
 )
 from .subblocks.longitudinal import longitudinal_header_dtype
 from .subblocks.data import mmcs_cherenkov_photons_dtype
-from .io import read_block, read_buffer_size, open_compressed
+from .io import iter_blocks, read_block, read_buffer_size, open_compressed
 
 from .constants import BLOCK_SIZE_BYTES, EVTH_VERSION_POSITION
 
@@ -30,7 +30,7 @@ def _to_floatarray(block):
 
 class CorsikaFile:
     """
-    A file to iterate over events in a CORSIKA binary output file
+    A file to iterate over events in a CORSIKA binary output file.
     """
 
     def __init__(self, path, parse_blocks=True):
@@ -39,8 +39,9 @@ class CorsikaFile:
         self.parse_blocks = parse_blocks
         self._buffer_size = read_buffer_size(path)
         self._f = open_compressed(path)
+        self._block_iter = iter_blocks(self._f)
 
-        runh_bytes = self.read_block()
+        runh_bytes = next(self._block_iter)
         if not runh_bytes[:4] == b'RUNH':
             raise ValueError('File does not start with b"RUNH"')
 
@@ -59,10 +60,11 @@ class CorsikaFile:
                 self._f.seek(-4, 2)
 
             self._f.seek(-BLOCK_SIZE_BYTES, 1)
-            block = self.read_block()
+            # block = next(self._block_iter)
+            block = self._f.read(BLOCK_SIZE_BYTES)
             while block[:4] != b'RUNE':
                 self._f.seek(-2 * BLOCK_SIZE_BYTES, 1)
-                block = self.read_block()
+                block = self._f.read(BLOCK_SIZE_BYTES)
 
             self._run_end = parse_run_end(block)[0]
             self._f.seek(pos)
@@ -70,7 +72,7 @@ class CorsikaFile:
         return self._run_end
 
     def __next__(self):
-        block = self.read_block()
+        block = next(self._block_iter)
 
         if block[:4] == b'RUNE':
             self._run_end = parse_run_end(block)
@@ -87,7 +89,7 @@ class CorsikaFile:
         data_bytes = bytearray()
         long_bytes = bytearray()
 
-        block = self.read_block()
+        block = next(self._block_iter)
         while block[:4] != b'EVTE':
 
             if block[:4] == b'LONG':
@@ -95,7 +97,7 @@ class CorsikaFile:
             else:
                 data_bytes += block
 
-            block = self.read_block()
+            block = next(self._block_iter)
 
         if self.parse_blocks:
             event_end = parse_event_end(block)[0]
@@ -120,7 +122,7 @@ class CorsikaFile:
         pos = self._f.tell()
         self._f.seek(0)
 
-        block = self.read_block()
+        block = next(self._block_iter)
         event_header_data = bytearray()
         end_found = True
 
@@ -142,16 +144,13 @@ class CorsikaFile:
             elif block[:4] == b'EVTE':
                 end_found = True
 
-            block = self.read_block()
+            block = next(self._block_iter)
 
         self._f.seek(pos)
 
         event_headers = parse_event_header(event_header_data)
 
         return self.run_header, event_headers, self._run_end
-
-    def read_block(self):
-        return read_block(self._f, self._buffer_size)
 
     def __enter__(self):
         return self

@@ -52,6 +52,57 @@ def read_buffer_size(path):
     return buffer_size
 
 
+RECORD_MARKER = struct.Struct('i')
+
+
+def iter_blocks(f, default_buffersize=BLOCK_SIZE_BYTES * 100):
+    is_fortran_file = True
+    record_size = default_buffersize
+
+
+    data = f.read(4)
+    print('FIRST 4 bytes:', data)
+    f.seek(0)
+    if data == b'RUNH':
+        is_fortran_file = False
+
+    print("RECORDS:", is_fortran_file)
+
+    
+    record = 0
+    while True:
+        record += 1
+        # for the fortran-chunked output, we need to read the record size
+        if is_fortran_file:
+            data = f.read(RECORD_MARKER.size)
+            if len(data) == 0:
+                yield b''
+                return
+
+            record_size, = RECORD_MARKER.unpack(data)
+
+        data = f.read(record_size)
+        if len(data) == 0:
+            yield b''
+            return
+
+
+        n_blocks = len(data) // BLOCK_SIZE_BYTES
+        print(n_blocks, BLOCK_SIZE_BYTES * n_blocks - len(data))
+        for block in range(n_blocks):
+            print(f'Block {block}, record {record}')
+            start = block * BLOCK_SIZE_BYTES
+            stop = start + BLOCK_SIZE_BYTES
+            print(start, stop)
+            block = data[start:stop]
+            print(block[:4])
+            yield block
+
+        # read trailing record marker
+        if is_fortran_file:
+            f.read(RECORD_MARKER.size)
+
+
 def read_block(f, buffer_size=None):
     '''
     Reads a block of CORSIKA output, e.g. 273 4-byte floats.
