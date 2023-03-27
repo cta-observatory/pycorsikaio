@@ -61,9 +61,8 @@ def read_block(f, buffer_size=None):
     integer (the buffer size)
     before and after each block, which has to be skipped.
     '''
-    pos = f.tell()
-
     if buffer_size is not None:
+        pos = f.tell()
         if pos == 0:
             f.seek(4)
 
