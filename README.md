@@ -12,7 +12,9 @@ pip install corsikaio
 
 ## Features
 
-Load CORSIKA binary particle or cherenkov data files using python and numpy.
+### Simple native reading
+
+Load CORSIKA binary particle or Cherenkov data files using python and numpy.
 
 Also supports MMCS 6.5
 
@@ -32,5 +34,28 @@ with CorsikaCherenkovFile('cer000001') as f:
         plt.show()
 ```
 
+### Astropy table
 
+> **Note**
+> You need to install ``astropy`` along _pycorsikaio_ to use this feature.
+
+```python
+from corsikaio.reader import CorsikaReader
+
+input_corsika_file = "DAT00001"
+
+reader = CorsikaReader(
+    input_corsika_file,
+    max_events=5,
+    load_run_headers=False,
+    load_event_headers=False,
+    load_particles=True,
+    load_longitudinal=False,
+    load_event_ends=False,
+    load_run_ends=False,
+    selected_keys=["event_number", "particle_description", "x", "y"],
+)
+
+table = reader.read()
+```
 
