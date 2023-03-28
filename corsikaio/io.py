@@ -4,6 +4,10 @@ import struct
 from .constants import BLOCK_SIZE_BYTES
 
 
+#: buffersize for files not written as fortran sequential file
+DEFAULT_BUFFER_SIZE = BLOCK_SIZE_BYTES * 100
+
+
 def is_gzip(path):
     '''Test if a file is gzipped by reading its first two bytes and compare
     to the gzip marker bytes.
@@ -55,9 +59,9 @@ def read_buffer_size(path):
 RECORD_MARKER = struct.Struct('i')
 
 
-def iter_blocks(f, default_buffersize=BLOCK_SIZE_BYTES * 100):
+def iter_blocks(f):
     is_fortran_file = True
-    record_size = default_buffersize
+    buffer_size = DEFAULT_BUFFER_SIZE
 
 
     data = f.read(4)
@@ -72,9 +76,9 @@ def iter_blocks(f, default_buffersize=BLOCK_SIZE_BYTES * 100):
             if len(data) < RECORD_MARKER.size:
                 raise IOError("Read less bytes than expected, file seems to be truncated")
 
-            record_size, = RECORD_MARKER.unpack(data)
+            buffer_size, = RECORD_MARKER.unpack(data)
 
-        data = f.read(record_size)
+        data = f.read(buffer_size)
 
         n_blocks = len(data) // BLOCK_SIZE_BYTES
         for block in range(n_blocks):

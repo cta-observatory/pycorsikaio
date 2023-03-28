@@ -60,7 +60,6 @@ class CorsikaFile:
                 self._f.seek(-4, 2)
 
             self._f.seek(-BLOCK_SIZE_BYTES, 1)
-            # block = next(self._block_iter)
             block = self._f.read(BLOCK_SIZE_BYTES)
             while block[:4] != b'RUNE':
                 self._f.seek(-2 * BLOCK_SIZE_BYTES, 1)
