@@ -13,7 +13,7 @@ from .subblocks import (
 )
 from .subblocks.longitudinal import longitudinal_header_dtype
 from .subblocks.data import mmcs_cherenkov_photons_dtype
-from .io import iter_blocks, read_block, read_buffer_size, open_compressed
+from .io import iter_blocks, read_buffer_size, open_compressed
 
 from .constants import BLOCK_SIZE_BYTES, EVTH_VERSION_POSITION
 
