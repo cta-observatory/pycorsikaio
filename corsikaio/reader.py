@@ -28,8 +28,6 @@ __all__ = ["CorsikaReader"]
 
 logger = logging.getLogger(__name__)
 
-cds.enable()
-
 
 class Reader:
     """Base class for all readers which load data into astropy tables.
@@ -308,6 +306,8 @@ class CorsikaReader(Reader):
             excluded_keys=excluded_keys,
             selected_keys=selected_keys,
         )
+
+        cds.enable()  # this is needed for units like "GeV/c"
 
         self.max_events = max_events
 
