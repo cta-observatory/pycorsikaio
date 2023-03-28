@@ -307,8 +307,6 @@ class CorsikaReader(Reader):
             selected_keys=selected_keys,
         )
 
-        cds.enable()  # this is needed for units like "GeV/c"
-
         self.max_events = max_events
 
         self.load_run_headers = load_run_headers
@@ -571,30 +569,31 @@ class CorsikaReader(Reader):
         table = None
         joining_keys = set()
 
-        if self.load_run_headers:
-            table, joining_keys = self._make_table_and_join(
-                table, joining_keys, "run_headers"
-            )
-        if self.load_event_headers:
-            table, joining_keys = self._make_table_and_join(
-                table, joining_keys, "event_headers"
-            )
-        if self.load_particles:
-            table, joining_keys = self._make_table_and_join(
-                table, joining_keys, "particles"
-            )
-        if self.load_longitudinal:
-            table, joining_keys = self._make_table_and_join(
-                table, joining_keys, "longitudinal"
-            )
-        if self.load_event_ends:
-            table, joining_keys = self._make_table_and_join(
-                table, joining_keys, "event_ends"
-            )
-        if self.load_run_ends:
-            table, joining_keys = self._make_table_and_join(
-                table, joining_keys, "run_ends"
-            )
+        with cds.enable():  # this is needed for units like "GeV/c"
+            if self.load_run_headers:
+                table, joining_keys = self._make_table_and_join(
+                    table, joining_keys, "run_headers"
+                )
+            if self.load_event_headers:
+                table, joining_keys = self._make_table_and_join(
+                    table, joining_keys, "event_headers"
+                )
+            if self.load_particles:
+                table, joining_keys = self._make_table_and_join(
+                    table, joining_keys, "particles"
+                )
+            if self.load_longitudinal:
+                table, joining_keys = self._make_table_and_join(
+                    table, joining_keys, "longitudinal"
+                )
+            if self.load_event_ends:
+                table, joining_keys = self._make_table_and_join(
+                    table, joining_keys, "event_ends"
+                )
+            if self.load_run_ends:
+                table, joining_keys = self._make_table_and_join(
+                    table, joining_keys, "run_ends"
+                )
 
         # Reduce table
         table = self.filter_table(
