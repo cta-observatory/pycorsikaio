@@ -4,6 +4,12 @@ import struct
 from .constants import BLOCK_SIZE_BYTES
 
 
+#: buffersize for files not written as fortran sequential file
+DEFAULT_BUFFER_SIZE = BLOCK_SIZE_BYTES * 100
+#: struct definition of the fortran record marker
+RECORD_MARKER = struct.Struct('i')
+
+
 def is_gzip(path):
     '''Test if a file is gzipped by reading its first two bytes and compare
     to the gzip marker bytes.
@@ -42,14 +48,49 @@ def read_buffer_size(path):
     size of the CORSIKA buffer in bytes
     '''
     with open_compressed(path) as f:
-        data = f.read(4)
+        data = f.read(RECORD_MARKER.size)
 
         if data == b'RUNH':
             return None
 
-        buffer_size, = struct.unpack('I', data)
+        buffer_size, = RECORD_MARKER.unpack(data)
 
     return buffer_size
+
+
+def iter_blocks(f):
+    is_fortran_file = True
+    buffer_size = DEFAULT_BUFFER_SIZE
+
+
+    data = f.read(4)
+    f.seek(0)
+    if data == b'RUNH':
+        is_fortran_file = False
+
+    while True:
+        # for the fortran-chunked output, we need to read the record size
+        if is_fortran_file:
+            data = f.read(RECORD_MARKER.size)
+            if len(data) < RECORD_MARKER.size:
+                raise IOError("Read less bytes than expected, file seems to be truncated")
+
+            buffer_size, = RECORD_MARKER.unpack(data)
+
+        data = f.read(buffer_size)
+
+        n_blocks = len(data) // BLOCK_SIZE_BYTES
+        for block in range(n_blocks):
+            start = block * BLOCK_SIZE_BYTES
+            stop = start + BLOCK_SIZE_BYTES
+            block = data[start:stop]
+            if len(block) < BLOCK_SIZE_BYTES:
+                raise IOError("Read less bytes than expected, file seems to be truncated")
+            yield block
+
+        # read trailing record marker
+        if is_fortran_file:
+            f.read(RECORD_MARKER.size)
 
 
 def read_block(f, buffer_size=None):

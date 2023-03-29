@@ -1,3 +1,10 @@
+import pytest
+import numpy as np
+from scipy.io import FortranFile
+
+from corsikaio.io import iter_blocks
+
+
 test_files = (
     'tests/resources/mmcs65',
     'tests/resources/corsika74100'
@@ -27,6 +34,97 @@ def test_read_block():
         with open(path, 'rb') as f:
             block = read_block(f, buffer_size)
         assert block[:4] == b'RUNH'
+
+
+@pytest.fixture()
+def simple_dummy_file(tmp_path):
+    path = tmp_path / "simple.dat"
+    data = bytearray(np.arange(273).astype(np.float32))
+
+    with path.open('wb') as f:
+        data[:4] = b'RUNH'
+        f.write(data)
+
+        for _ in range(5):
+            data[:4] = b'EVTH'
+            f.write(data)
+            for _ in range(3):
+                data[:4] = np.float32(0).tobytes()
+                f.write(data)
+            data[:4] = b'EVTE'
+            f.write(data)
+        data[:4] = b'RUNE'
+        f.write(data)
+    return path
+
+
+@pytest.fixture()
+def fortran_raw_dummy_file(tmp_path):
+    path = tmp_path / "fortran_raw.dat"
+    data = np.arange(273).astype(np.float32)
+
+
+    blocks = []
+    data[0] = np.frombuffer(b'RUNH', dtype=np.float32)
+    blocks.append(data.copy())
+
+    for _ in range(5):
+        data[0] = np.frombuffer(b'EVTH', dtype=np.float32)
+        blocks.append(data.copy())
+        for _ in range(3):
+            data[0] = 0.0
+            blocks.append(data.copy())
+        data[0] = np.frombuffer(b'EVTE', dtype=np.float32)
+        blocks.append(data.copy())
+    data[0] = np.frombuffer(b'RUNE', dtype=np.float32)
+    blocks.append(data.copy())
+
+    blocks_per_record = 5
+    with FortranFile(path, mode='w') as f:
+        n_records = len(blocks) // blocks_per_record + 1
+
+        for i in range(n_records):
+            start = i * blocks_per_record
+            stop = (i + 1) * blocks_per_record
+            print(start, stop, len(blocks))
+            f.write_record(np.concatenate(blocks[start:stop]))
+
+    return path
+
+
+@pytest.fixture(params=["simple", "fortran_raw"])
+def dummy_file(request, fortran_raw_dummy_file, simple_dummy_file):
+    if request.param == "simple":
+        return simple_dummy_file
+    else:
+        return fortran_raw_dummy_file
+
+
+def test_iter_blocks_simple_file(dummy_file):
+    """Test for iterblocks for the case of no record markers"""
+    data = np.arange(273).astype(np.float32)
+
+    with dummy_file.open('rb') as f:
+        block_it = iter_blocks(f)
+        block = next(block_it)
+        assert block[:4] == b'RUNH'
+        assert (np.frombuffer(block[4:], np.float32) == data[1:]).all()
+
+        for _ in range(5):
+            block = next(block_it)
+            assert block[:4] == b'EVTH'
+            assert (np.frombuffer(block[4:], np.float32) == data[1:]).all()
+            for _ in range(3):
+                block = next(block_it)
+                assert (np.frombuffer(block, np.float32) == data).all()
+            block = next(block_it)
+            assert block[:4] == b'EVTE'
+            assert (np.frombuffer(block[4:], np.float32) == data[1:]).all()
+
+        block = next(block_it)
+        assert block[:4] == b'RUNE'
+        assert (np.frombuffer(block[4:], np.float32) == data[1:]).all()
+
 
 
 def test_versions():
