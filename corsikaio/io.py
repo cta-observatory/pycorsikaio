@@ -72,12 +72,20 @@ def iter_blocks(f):
         # for the fortran-chunked output, we need to read the record size
         if is_fortran_file:
             data = f.read(RECORD_MARKER.size)
+            if len(data) == 0:
+                return
+
             if len(data) < RECORD_MARKER.size:
                 raise IOError("Read less bytes than expected, file seems to be truncated")
 
             buffer_size, = RECORD_MARKER.unpack(data)
 
         data = f.read(buffer_size)
+        if len(data) == 0:
+            if is_fortran_file:
+                raise IOError("Read less bytes than expected, file seems to be truncated")
+            else:
+                return
 
         n_blocks = len(data) // BLOCK_SIZE_BYTES
         for block in range(n_blocks):
