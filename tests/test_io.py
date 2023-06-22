@@ -125,7 +125,19 @@ def test_iter_blocks_simple_file(dummy_file):
         assert block[:4] == b'RUNE'
         assert (np.frombuffer(block[4:], np.float32) == data[1:]).all()
 
+        with pytest.raises(StopIteration):
+            next(block_it)
 
+
+def test_iter_blocks_all(dummy_file):
+    """Test for iterblocks for the case of no record markers"""
+
+    with dummy_file.open('rb') as f:
+        n_blocks_read = 0
+        for _ in iter_blocks(f):
+            n_blocks_read += 1
+
+    assert n_blocks_read == 27
 
 def test_versions():
     from corsikaio.io import read_buffer_size, read_block
