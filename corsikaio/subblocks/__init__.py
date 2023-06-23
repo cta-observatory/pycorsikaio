@@ -13,7 +13,12 @@ from .longitudinal import longitudinal_data_dtype
 from ..constants import RUNH_VERSION_POSITION, EVTH_VERSION_POSITION
 
 __all__ = [
+    "get_units_from_fields",
+    "get_version",
+    "parse_data_block",
+    "parse_event_end",
     "parse_event_header",
+    "parse_run_end",
     "parse_run_header",
     "parse_cherenkov_photons",
     "parse_particle_data",
