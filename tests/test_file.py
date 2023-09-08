@@ -88,7 +88,8 @@ def test_particle_no_parse():
 
 
 
-def test_truncated(tmp_path):
+@pytest.mark.parametrize("size", (273 * 10, 5000, 273 * 2))
+def test_truncated(tmp_path, size):
     '''Test we raise a meaningful error for a truncated file
 
     Truncated files might happen if corsika crashes or the disk is full.
@@ -100,7 +101,7 @@ def test_truncated(tmp_path):
 
     with open("tests/resources/corsika757_particle", "rb") as f:
         with path.open("wb") as out:
-            out.write(f.read(273 * 10))
+            out.write(f.read(size))
 
     with pytest.raises(IOError, match="seems to be truncated"):
         with CorsikaParticleFile(path) as f:
