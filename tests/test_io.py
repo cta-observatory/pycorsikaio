@@ -154,3 +154,17 @@ def test_versions():
 
             block = read_block(f, buffer_size)
             assert get_version(block, EVTH_VERSION_POSITION) == version
+
+
+
+@pytest.mark.parametrize("size", (100, 1000, 5000))
+def test_iter_blocks_truncated(size, tmp_path, dummy_file):
+    path = tmp_path / f"test_truncated_{size}.dat"
+
+    with path.open("wb") as out, dummy_file.open("rb") as infile:
+        out.write(infile.read(size))
+
+    with pytest.raises(IOError, match="file seems to be truncated"):
+        with path.open("rb") as f:
+            for _ in iter_blocks(f):
+                pass

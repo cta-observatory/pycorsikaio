@@ -81,19 +81,22 @@ def iter_blocks(f):
             buffer_size, = RECORD_MARKER.unpack(data)
 
         data = f.read(buffer_size)
-        if len(data) == 0:
-            if is_fortran_file:
+        if is_fortran_file:
+            if len(data) < buffer_size:
                 raise IOError("Read less bytes than expected, file seems to be truncated")
-            else:
+
+        else:
+            if len(data) == 0:
                 return
 
-        n_blocks = len(data) // BLOCK_SIZE_BYTES
+        n_blocks, rest = divmod(len(data), BLOCK_SIZE_BYTES)
+        if rest != 0:
+            raise IOError("Read less bytes than expected, file seems to be truncated")
+
         for block in range(n_blocks):
             start = block * BLOCK_SIZE_BYTES
             stop = start + BLOCK_SIZE_BYTES
             block = data[start:stop]
-            if len(block) < BLOCK_SIZE_BYTES:
-                raise IOError("Read less bytes than expected, file seems to be truncated")
             yield block
 
         # read trailing record marker
