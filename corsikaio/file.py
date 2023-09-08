@@ -71,7 +71,10 @@ class CorsikaFile:
         return self._run_end
 
     def __next__(self):
-        block = next(self._block_iter)
+        try:
+            block = next(self._block_iter)
+        except StopIteration:
+            raise IOError("File seems to be truncated")
 
         if block[:4] == b'RUNE':
             self._run_end = parse_run_end(block)
@@ -88,7 +91,11 @@ class CorsikaFile:
         data_bytes = bytearray()
         long_bytes = bytearray()
 
-        block = next(self._block_iter)
+        try:
+            block = next(self._block_iter)
+        except StopIteration:
+            raise IOError("File seems to be truncated")
+
         while block[:4] != b'EVTE':
 
             if block[:4] == b'LONG':
@@ -96,7 +103,10 @@ class CorsikaFile:
             else:
                 data_bytes += block
 
-            block = next(self._block_iter)
+            try:
+                block = next(self._block_iter)
+            except StopIteration:
+                raise IOError("File seems to be truncated")
 
         if self.parse_blocks:
             event_end = parse_event_end(block)[0]

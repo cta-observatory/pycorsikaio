@@ -125,7 +125,19 @@ def test_iter_blocks_simple_file(dummy_file):
         assert block[:4] == b'RUNE'
         assert (np.frombuffer(block[4:], np.float32) == data[1:]).all()
 
+        with pytest.raises(StopIteration):
+            next(block_it)
 
+
+def test_iter_blocks_all(dummy_file):
+    """Test for iterblocks for the case of no record markers"""
+
+    with dummy_file.open('rb') as f:
+        n_blocks_read = 0
+        for _ in iter_blocks(f):
+            n_blocks_read += 1
+
+    assert n_blocks_read == 27
 
 def test_versions():
     from corsikaio.io import read_buffer_size, read_block
@@ -142,3 +154,17 @@ def test_versions():
 
             block = read_block(f, buffer_size)
             assert get_version(block, EVTH_VERSION_POSITION) == version
+
+
+
+@pytest.mark.parametrize("size", (100, 1000, 5000))
+def test_iter_blocks_truncated(size, tmp_path, dummy_file):
+    path = tmp_path / f"test_truncated_{size}.dat"
+
+    with path.open("wb") as out, dummy_file.open("rb") as infile:
+        out.write(infile.read(size))
+
+    with pytest.raises(IOError, match="file seems to be truncated"):
+        with path.open("rb") as f:
+            for _ in iter_blocks(f):
+                pass
