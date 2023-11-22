@@ -5,7 +5,7 @@ from .run_header import run_header_types
 from .run_end import run_end_dtype
 
 from .event_header import event_header_types
-from .event_end import event_end_dtype
+from .event_end import event_end_types
 
 from .data import cherenkov_photons_dtype, particle_data_dtype
 from .longitudinal import longitudinal_data_dtype
@@ -38,8 +38,8 @@ def parse_event_header(event_header_bytes):
     return np.frombuffer(event_header_bytes, dtype=event_header_types[version])
 
 
-def parse_event_end(event_end_bytes):
-    return np.frombuffer(event_end_bytes, dtype=event_end_dtype)
+def parse_event_end(event_end_bytes,version):
+    return np.frombuffer(event_end_bytes, dtype=event_end_types[float(str(version)[:3])])
 
 
 def get_version(header_bytes, version_pos):
