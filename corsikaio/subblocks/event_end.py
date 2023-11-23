@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from .dtypes import build_dtype, Field
 
-event_end_fields = [
+event_end_fields_65 = [
     Field(1, "event_end", dtype="S4"),
     Field(2, "event_number"),
     Field(3, "n_photons_weighted"),
@@ -19,7 +19,7 @@ event_end_fields = [
     Field(267, "n_em_particles_preshower"),
 ]
 
-event_end_fields_7xx = [
+event_end_fields_7x = [
     Field(1, "event_end", dtype="S4"),
     Field(2, "event_number"),
     Field(3, "n_photons_weighted"),
@@ -36,27 +36,27 @@ event_end_fields_7xx = [
     Field(267, "n_em_particles_preshower"),
  ]
 
-event_end_dtype = build_dtype(event_end_fields)
-event_end_dtype_7xx = build_dtype(event_end_fields_7xx)
+event_end_dtype_65 = build_dtype(event_end_fields_65)
+event_end_dtype_7x = build_dtype(event_end_fields_7x)
 
 def warn_dtype():
-    warnings.warn("Version unknown, using default event end definition dtype")
-    return event_end_dtype
+    warnings.warn("Version unknown, using default event end definition dtype of version 7.x")
+    return event_end_dtype_7x
 
 def warn_fields():
-    warnings.warn("Version unknown, using default event end fields definition")
-    return event_end_fields
+    warnings.warn("Version unknown, using default event end fields definition of version 7.x")
+    return event_end_fields_7x
 
 event_end_fields = defaultdict(warn_fields)
-event_end_fields[6.5] = event_end_fields
-event_end_fields[7.4] = event_end_fields_7xx
-event_end_fields[7.5] = event_end_fields_7xx
-event_end_fields[7.6] = event_end_fields_7xx
-event_end_fields[7.7] = event_end_fields_7xx
+event_end_fields[6.5] = event_end_fields_65
+event_end_fields[7.4] = event_end_fields_7x
+event_end_fields[7.5] = event_end_fields_7x
+event_end_fields[7.6] = event_end_fields_7x
+event_end_fields[7.7] = event_end_fields_7x
 
 event_end_types = defaultdict(warn_dtype)
-event_end_types[6.5] = event_end_dtype
-event_end_types[7.4] = event_end_dtype_7xx
-event_end_types[7.5] = event_end_dtype_7xx
-event_end_types[7.6] = event_end_dtype_7xx
-event_end_types[7.7] = event_end_dtype_7xx
+event_end_types[6.5] = event_end_dtype_65
+event_end_types[7.4] = event_end_dtype_7x
+event_end_types[7.5] = event_end_dtype_7x
+event_end_types[7.6] = event_end_dtype_7x
+event_end_types[7.7] = event_end_dtype_7x
