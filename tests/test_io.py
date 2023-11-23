@@ -65,18 +65,18 @@ def fortran_raw_dummy_file(tmp_path):
 
 
     blocks = []
-    data[0] = np.frombuffer(b'RUNH', dtype=np.float32)
+    data[0] = np.frombuffer(b'RUNH', dtype=np.float32)[0]
     blocks.append(data.copy())
 
     for _ in range(5):
-        data[0] = np.frombuffer(b'EVTH', dtype=np.float32)
+        data[0] = np.frombuffer(b'EVTH', dtype=np.float32)[0]
         blocks.append(data.copy())
         for _ in range(3):
             data[0] = 0.0
             blocks.append(data.copy())
-        data[0] = np.frombuffer(b'EVTE', dtype=np.float32)
+        data[0] = np.frombuffer(b'EVTE', dtype=np.float32)[0]
         blocks.append(data.copy())
-    data[0] = np.frombuffer(b'RUNE', dtype=np.float32)
+    data[0] = np.frombuffer(b'RUNE', dtype=np.float32)[0]
     blocks.append(data.copy())
 
     blocks_per_record = 5
