@@ -1,20 +1,34 @@
+import pytest
 import numpy as np
 
 
-def test_longitudinal():
+@pytest.mark.parametrize("slant", (True, False))
+def test_longitudinal(slant):
     from corsikaio import read_longitudinal_distributions
     from corsikaio import longitudinal_fit_function
-    path = "./tests/resources/corsika_77500_particle.long"
+
+    if slant:
+        path = "./tests/resources/corsika_77500_particle_slant.long"
+        n_steps = 105
+        width = 10
+    else:
+        path = "./tests/resources/corsika_77500_particle_vertical.long"
+        n_steps = 208
+        width = 5
 
 
     n_showers = 0
     for longi in read_longitudinal_distributions(path):
         n_showers += 1
         assert longi["shower"] == n_showers
-        assert len(longi["particles"]) == 105
-        assert len(longi["energy_deposition"]) == 105
-        np.testing.assert_array_equal(np.diff(longi["particles"]["depth"]), 10)
-        np.testing.assert_array_equal(np.diff(longi["energy_deposition"]["depth"]), 10)
+        assert longi["slant"] is slant
+
+        assert longi["n_steps"] == n_steps
+        assert len(longi["particles"]) == n_steps
+        assert len(longi["energy_deposition"]) == n_steps
+
+        np.testing.assert_array_equal(np.diff(longi["particles"]["depth"]), width)
+        np.testing.assert_array_equal(np.diff(longi["energy_deposition"]["depth"]), width)
 
         particles = longi["particles"]
 
@@ -25,5 +39,7 @@ def test_longitudinal():
         np.testing.assert_allclose(particles["charged"][mask], fit, rtol=0.2)
 
 
-    assert n_showers == 5
-
+    if slant:
+        assert n_showers == 5
+    else:
+        assert n_showers == 1

@@ -4,8 +4,8 @@ Functions related to the CORSIKA longitudinal distribution
 import re
 import numpy as np
 
-PARTICLE_HEADER_RE = re.compile(r"LONGITUDINAL DISTRIBUTION IN\s+(\d+)\s+(SLANT\s+)?STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
-ENERGY_HEADER_RE = re.compile(r"LONGITUDINAL ENERGY DEPOSIT IN\s+(\d+)\s+(SLANT\s+)?STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
+PARTICLE_HEADER_RE = re.compile(r"LONGITUDINAL DISTRIBUTION IN\s+(\d+)\s+(SLANT|VERTICAL)\s+STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
+ENERGY_HEADER_RE = re.compile(r"LONGITUDINAL ENERGY DEPOSIT IN\s+(\d+)\s+(SLANT|VERTICAL)\s+STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
 
 ENERGY_COLUMNS = [
     "depth",
@@ -72,7 +72,8 @@ def read_longitudinal_distributions(path):
             n_steps = int(match.group(1))
             longi = dict(
                 shower=int(match.group(4)),
-                slant=match.group(2) is not None,
+                n_steps=n_steps,
+                slant=match.group(2) == "SLANT",
                 step_width=float(match.group(3)),
             )
 
