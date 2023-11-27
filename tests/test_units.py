@@ -25,8 +25,10 @@ def test_new_field():
 
 
 def test_event_end_units():
-
-    assert all([f.unit is None for f in event_end_fields])
+    
+    for version in event_end_fields:
+        
+        assert all([f.unit is None for f in event_end_fields[version]])
 
 
 def test_run_end_units():

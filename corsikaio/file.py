@@ -109,7 +109,7 @@ class CorsikaFile:
                 raise IOError("File seems to be truncated")
 
         if self.parse_blocks:
-            event_end = parse_event_end(block)[0]
+            event_end = parse_event_end(block,self.version)[0]
             data = self.parse_data_blocks(data_bytes)
             longitudinal = parse_longitudinal(long_bytes)
         else:

@@ -118,3 +118,19 @@ def test_truncated(tmp_path, size):
         with CorsikaParticleFile(path) as f:
             for _ in f:
                 pass
+
+
+def test_longitudinal_parameters():
+    '''Test event end blocks contain longitudinal parameters'''
+    from corsikaio import CorsikaParticleFile
+
+    path = "tests/resources/corsika_77500_particle"
+
+    with CorsikaParticleFile(path) as f:
+        n_events = 0
+        for event in f:
+            n_events += 1
+            assert "longitudinal_fit_parameters" in event.end.dtype.names
+            parameters = event.end["longitudinal_fit_parameters"]
+            np.testing.assert_array_equal(parameters != 0, True)
+        assert n_events == 5
