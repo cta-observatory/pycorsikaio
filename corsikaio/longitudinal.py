@@ -5,7 +5,7 @@ import re
 import numpy as np
 
 PARTICLE_HEADER_RE = re.compile(r"LONGITUDINAL DISTRIBUTION IN\s+(\d+)\s+(SLANT\s+)?STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
-ENERG_HEADER_RE = re.compile(r"LONGITUDINAL ENERGY DEPOSIT IN\s+(\d+)\s+(SLANT\s+)?STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
+ENERGY_HEADER_RE = re.compile(r"LONGITUDINAL ENERGY DEPOSIT IN\s+(\d+)\s+(SLANT\s+)?STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
 
 ENERGY_COLUMNS = [
     "depth",
@@ -83,7 +83,7 @@ def read_longitudinal_distributions(path):
             )
 
             line = f.readline().strip()
-            match = ENERG_HEADER_RE.match(line)
+            match = ENERGY_HEADER_RE.match(line)
             if not match:
                 raise ValueError(f"Error reading file, expected energy deposition header line, got: {line}")
             n_steps = int(match.group(1))
