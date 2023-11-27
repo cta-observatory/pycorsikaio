@@ -43,3 +43,10 @@ def test_longitudinal(slant):
         assert n_showers == 5
     else:
         assert n_showers == 1
+
+
+def test_invalid(tmp_path):
+    from corsikaio import read_longitudinal_distributions
+
+    with pytest.raises(IOError, match="does not seem to be"):
+        next(read_longitudinal_distributions("tests/resources/corsika_77500_particle"))

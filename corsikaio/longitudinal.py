@@ -59,14 +59,18 @@ def read_longitudinal_distributions(path):
     """
     first = True
     with open(path, "r") as f:
-        while line := f.readline().strip():
+        try:
+            line = f.readline().strip()
+        except UnicodeDecodeError:
+            raise IOError(f"Inputfile {path} does not seem to be a longitudinal file")
 
+        while line:
             match = PARTICLE_HEADER_RE.match(line)
             if not match:
                 if first:
-                    raise ValueError(f"Inputfile {path} does not seem to be a longitudinal file")
+                    raise IOError(f"Inputfile {path} does not seem to be a longitudinal file")
                 else:
-                    raise ValueError(f"Error reading file, expected header line, got: {line}")
+                    raise IOError(f"Error reading file, expected header line, got: {line}")
             first = False
 
             n_steps = int(match.group(1))
@@ -86,7 +90,7 @@ def read_longitudinal_distributions(path):
             line = f.readline().strip()
             match = ENERGY_HEADER_RE.match(line)
             if not match:
-                raise ValueError(f"Error reading file, expected energy deposition header line, got: {line}")
+                raise IOError(f"Error reading file, expected energy deposition header line, got: {line}")
             n_steps = int(match.group(1))
 
             # skip
@@ -106,5 +110,5 @@ def read_longitudinal_distributions(path):
                 longi["average_deviation"] = float(deviation)
 
             f.readline()
-
             yield longi
+            line = f.readline().strip()
