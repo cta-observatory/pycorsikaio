@@ -1,4 +1,5 @@
 from .file import CorsikaFile, CorsikaCherenkovFile, CorsikaParticleFile
+from .longitudinal import read_longitudinal_distributions, longitudinal_fit_function
 from .version import __version__
 
 
@@ -6,6 +7,8 @@ __all__ = [
     'CorsikaFile',
     'CorsikaCherenkovFile',
     'CorsikaParticleFile',
+    'read_longitudinal_distributions',
+    'longitudinal_fit_function',
     'as_dict',
     '__version__',
 ]
