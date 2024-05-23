@@ -3,14 +3,18 @@ from collections import namedtuple
 
 from .subblocks import (
     parse_run_header,
+    parse_run_header_thin,
     parse_event_header,
+    parse_event_header_thin,
     parse_event_end,
+    parse_event_end_thin,
     parse_cherenkov_photons,
     parse_cherenkov_photons_thin,
     parse_particle_data,
     parse_particle_data_thin,
     parse_longitudinal,
     parse_run_end,
+    parse_run_end_thin,
     get_version,
 )
 from .subblocks.longitudinal import longitudinal_header_dtype
@@ -48,7 +52,10 @@ class CorsikaFile:
         if not runh_bytes[:4] == b'RUNH':
             raise ValueError('File does not start with b"RUNH"')
 
-        self.run_header = parse_run_header(runh_bytes)[0]
+        if self.thinning == False:
+            self.run_header = parse_run_header(runh_bytes)[0]
+        else:
+            self.run_header = parse_run_header_thin(runh_bytes)[0]
         self.version = round(float(self.run_header['version']), 4)
         self._run_end = None
 
@@ -72,7 +79,10 @@ class CorsikaFile:
                 self._f.seek(-2 * block_size, 1)
                 block = self._f.read(block_size)
 
-            self._run_end = parse_run_end(block)[0]
+            if self.thinning == False:
+                self._run_end = parse_run_end(block)[0]
+            else:
+                self._run_end = parse_run_end_thin(block)[0]
             self._f.seek(pos)
 
         return self._run_end
@@ -84,14 +94,20 @@ class CorsikaFile:
             raise IOError("File seems to be truncated")
 
         if block[:4] == b'RUNE':
-            self._run_end = parse_run_end(block)
+            if self.thinning == False:
+                self._run_end = parse_run_end(block)
+            else:
+                self._run_end = parse_run_end_thin(block)
             raise StopIteration()
 
         if block[:4] != b'EVTH':
             raise IOError('EVTH block expected but found {}'.format(block[:4]))
 
         if self.parse_blocks:
-            event_header = parse_event_header(block)[0]
+            if self.thinning == False:
+                event_header = parse_event_header(block)[0]
+            else:
+                event_header = parse_event_header_thin(block)[0]
         else:
             event_header = _to_floatarray(block)
 
@@ -116,7 +132,10 @@ class CorsikaFile:
                 raise IOError("File seems to be truncated")
 
         if self.parse_blocks:
-            event_end = parse_event_end(block,self.version)[0]
+            if self.thinning == False:
+                event_end = parse_event_end(block,self.version)[0]
+            else:
+                event_end = parse_event_end_thin(block,self.version)[0]
             data = self.parse_data_blocks(data_bytes)
             longitudinal = parse_longitudinal(long_bytes)
         else:
@@ -151,7 +170,10 @@ class CorsikaFile:
 
         while block:
             if block[:4] == b'RUNE':
-                self._run_end = parse_run_end(block)[0]
+                if self.thinning == False:
+                    self._run_end = parse_run_end(block)[0]
+                else:
+                    self._run_end = parse_run_end_thin(block)[0]
                 break
 
             if (
@@ -171,7 +193,10 @@ class CorsikaFile:
 
         self._f.seek(pos)
 
-        event_headers = parse_event_header(event_header_data)
+        if self.thinning == False:
+            event_headers = parse_event_header(event_header_data)
+        else:
+            event_headers = parse_event_header_thin(event_header_data)
 
         return self.run_header, event_headers, self._run_end
 
