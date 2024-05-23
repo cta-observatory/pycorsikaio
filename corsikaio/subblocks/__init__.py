@@ -7,7 +7,7 @@ from .run_end import run_end_dtype
 from .event_header import event_header_types
 from .event_end import event_end_types
 
-from .data import cherenkov_photons_dtype, particle_data_dtype
+from .data import cherenkov_photons_dtype, cherenkov_photons_thin_dtype, particle_data_dtype, particle_data_thin_dtype
 from .longitudinal import longitudinal_data_dtype
 
 from ..constants import RUNH_VERSION_POSITION, EVTH_VERSION_POSITION
@@ -16,7 +16,9 @@ __all__ = [
     "parse_event_header",
     "parse_run_header",
     "parse_cherenkov_photons",
+    "parse_cherenkov_photons_thin",
     "parse_particle_data",
+    "parse_particle_data_thin",
     "parse_longitudinal",
 ]
 
@@ -57,8 +59,16 @@ def parse_cherenkov_photons(data_block_bytes):
     return parse_data_block(data_block_bytes, dtype=cherenkov_photons_dtype)
 
 
+def parse_cherenkov_photons_thin(data_block_bytes):
+    return parse_data_block(data_block_bytes, dtype=cherenkov_photons_thin_dtype)
+
+
 def parse_particle_data(data_block_bytes):
     return parse_data_block(data_block_bytes, dtype=particle_data_dtype)
+
+
+def parse_particle_data_thin(data_block_bytes):
+    return parse_data_block(data_block_bytes, dtype=particle_data_thin_dtype)
 
 
 def parse_longitudinal(longitudinal_data_bytes):

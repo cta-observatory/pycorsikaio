@@ -6,7 +6,9 @@ from .subblocks import (
     parse_event_header,
     parse_event_end,
     parse_cherenkov_photons,
+    parse_cherenkov_photons_thin,
     parse_particle_data,
+    parse_particle_data_thin,
     parse_longitudinal,
     parse_run_end,
     get_version,
@@ -15,7 +17,7 @@ from .subblocks.longitudinal import longitudinal_header_dtype
 from .subblocks.data import mmcs_cherenkov_photons_dtype
 from .io import iter_blocks, read_buffer_size, open_compressed
 
-from .constants import BLOCK_SIZE_BYTES, EVTH_VERSION_POSITION
+from .constants import BLOCK_SIZE_BYTES, BLOCK_SIZE_BYTES_THIN, EVTH_VERSION_POSITION
 
 Event = namedtuple('Event', ['header', 'data', 'longitudinal', 'end'])
 PhotonEvent = namedtuple('PhotonEvent', ['header', 'photons', 'longitudinal', 'end'])
@@ -33,13 +35,14 @@ class CorsikaFile:
     A file to iterate over events in a CORSIKA binary output file.
     """
 
-    def __init__(self, path, parse_blocks=True):
+    def __init__(self, path, parse_blocks=True, thinning=False):
         self.EventClass = Event
 
         self.parse_blocks = parse_blocks
+        self.thinning = thinning
         self._buffer_size = read_buffer_size(path)
         self._f = open_compressed(path)
-        self._block_iter = iter_blocks(self._f)
+        self._block_iter = iter_blocks(self._f, thinning=self.thinning)
 
         runh_bytes = next(self._block_iter)
         if not runh_bytes[:4] == b'RUNH':
@@ -51,6 +54,10 @@ class CorsikaFile:
 
     @property
     def run_end(self):
+        if self.thinning == False:
+            block_size = BLOCK_SIZE_BYTES
+        else:
+            block_size = BLOCK_SIZE_BYTES_THIN
         if self._run_end is None:
             pos = self._f.tell()
 
@@ -59,11 +66,11 @@ class CorsikaFile:
             else:
                 self._f.seek(-4, 2)
 
-            self._f.seek(-BLOCK_SIZE_BYTES, 1)
-            block = self._f.read(BLOCK_SIZE_BYTES)
+            self._f.seek(-block_size, 1)
+            block = self._f.read(block_size)
             while block[:4] != b'RUNE':
-                self._f.seek(-2 * BLOCK_SIZE_BYTES, 1)
-                block = self._f.read(BLOCK_SIZE_BYTES)
+                self._f.seek(-2 * block_size, 1)
+                block = self._f.read(block_size)
 
             self._run_end = parse_run_end(block)[0]
             self._f.seek(pos)
@@ -114,14 +121,20 @@ class CorsikaFile:
             longitudinal = parse_longitudinal(long_bytes)
         else:
             event_end = _to_floatarray(block)
-            data = _to_floatarray(data_bytes).reshape(-1, 7)
+            if self.thinning == False:
+                data = _to_floatarray(data_bytes).reshape(-1, 7)
+            else:
+                data = _to_floatarray(data_bytes).reshape(-1, 8)
+
             longitudinal = _to_floatarray(long_bytes)
 
         return self.EventClass(event_header, data, longitudinal, event_end)
 
-    @classmethod
-    def parse_data_blocks(cls, data_bytes):
-        array = np.frombuffer(data_bytes, dtype='float32').reshape(-1, 7)
+    def parse_data_blocks(self, data_bytes):
+        if self.thinning == False:
+            array = np.frombuffer(data_bytes, dtype='float32').reshape(-1, 7)
+        else:
+            array = np.frombuffer(data_bytes, dtype='float32').reshape(-1, 8)
         return array[np.any(array != 0, axis=1)]
 
     def __iter__(self):
@@ -131,7 +144,7 @@ class CorsikaFile:
         pos = self._f.tell()
         self._f.seek(0)
 
-        block_iter = iter_blocks(self._f)
+        block_iter = iter_blocks(self._f, thinning=self.thinning)
         block = next(block_iter)
         event_header_data = bytearray()
         end_found = True
@@ -174,14 +187,17 @@ class CorsikaFile:
 
 class CorsikaCherenkovFile(CorsikaFile):
 
-    def __init__(self, path, mmcs=False, **kwargs):
-        super().__init__(path, **kwargs)
+    def __init__(self, path, thinning=False, mmcs=False, **kwargs):
+        super().__init__(path, thinning=thinning, **kwargs)
 
         self.EventClass = PhotonEvent
         self.mmcs = mmcs
 
     def parse_data_blocks(self, data_bytes):
-        photons = parse_cherenkov_photons(data_bytes)
+        if self.thinning == False:
+            photons = parse_cherenkov_photons(data_bytes)
+        else:
+            photons = parse_cherenkov_photons_thin(data_bytes)
         if not self.mmcs:
             return photons
 
@@ -199,9 +215,12 @@ class CorsikaCherenkovFile(CorsikaFile):
 
 class CorsikaParticleFile(CorsikaFile):
 
-    def __init__(self, path, **kwargs):
-        super().__init__(path, **kwargs)
+    def __init__(self, path, thinning=False, **kwargs):
+        super().__init__(path, thinning=thinning, **kwargs)
         self.EventClass = ParticleEvent
 
     def parse_data_blocks(self, data_bytes):
-        return parse_particle_data(data_bytes)
+        if self.thinning == False:
+            return parse_particle_data(data_bytes)
+        else:
+            return parse_particle_data_thin(data_bytes)
