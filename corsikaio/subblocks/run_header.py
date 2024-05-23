@@ -75,16 +75,23 @@ run_header_fields_7x = [
 
 
 run_header_dtype_7x = build_dtype(run_header_fields_7x)
+run_header_thin_dtype_7x = build_dtype(run_header_fields_7x, itemsize = 4 * 312)
 run_header_dtype_65 = build_dtype(run_header_fields_65)
+run_header_thin_dtype_65 = build_dtype(run_header_fields_65, itemsize = 4 * 312)
 
 
 def warn_dtype():
     warnings.warn("Version unknown, using run header definition dtype of version 7.x")
     return run_header_dtype_7x
 
+def warn_dtype_thin():
+    warnings.warn("Version unknown, using run header definition dtype of version 7.x")
+    return run_header_thin_dtype_7x
+
 def warn_fields():
     warnings.warn("Version unknown, using run header fields definition of version 7.x")
     return run_header_fields_7x
+
 
 run_header_fields = defaultdict(warn_fields)
 run_header_fields[6.5] = run_header_fields_65
@@ -99,3 +106,10 @@ run_header_types[7.4] = run_header_dtype_7x
 run_header_types[7.5] = run_header_dtype_7x
 run_header_types[7.6] = run_header_dtype_7x
 run_header_types[7.7] = run_header_dtype_7x
+
+run_header_thin_types = defaultdict(warn_dtype_thin)
+run_header_thin_types[6.5] = run_header_thin_dtype_65
+run_header_thin_types[7.4] = run_header_thin_dtype_7x
+run_header_thin_types[7.5] = run_header_thin_dtype_7x
+run_header_thin_types[7.6] = run_header_thin_dtype_7x
+run_header_thin_types[7.7] = run_header_thin_dtype_7x

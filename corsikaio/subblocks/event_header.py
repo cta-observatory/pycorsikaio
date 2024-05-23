@@ -133,10 +133,20 @@ event_header_dtype_75xxx = build_dtype(event_header_fields_75)
 event_header_dtype_76xxx = build_dtype(event_header_fields_76)
 event_header_dtype_77xxx = build_dtype(event_header_fields_77)
 
+event_header_thin_dtype_65xxx = build_dtype(event_header_fields_65, itemsize = 4 * 312)
+event_header_thin_dtype_73xxx = build_dtype(event_header_fields_73, itemsize = 4 * 312)
+event_header_thin_dtype_74xxx = build_dtype(event_header_fields_74, itemsize = 4 * 312)
+event_header_thin_dtype_75xxx = build_dtype(event_header_fields_75, itemsize = 4 * 312)
+event_header_thin_dtype_76xxx = build_dtype(event_header_fields_76, itemsize = 4 * 312)
+event_header_thin_dtype_77xxx = build_dtype(event_header_fields_77, itemsize = 4 * 312)
 
 def warn_dtype():
     warnings.warn("Version unknown, using event header dtype definition of version 7.7XXX")
     return event_header_dtype_77xxx
+
+def warn_dtype_thin():
+    warnings.warn("Version unknown, using event header definition dtype of version 7.7XXX")
+    return event_header_thin_dtype_77xxx
 
 def warn_fields():
     warnings.warn("Version unknown, using event header fields definition of version 7.7XXX")
@@ -157,3 +167,11 @@ event_header_types[7.4] = event_header_dtype_74xxx
 event_header_types[7.5] = event_header_dtype_75xxx
 event_header_types[7.6] = event_header_dtype_76xxx
 event_header_types[7.7] = event_header_dtype_76xxx
+
+event_header_thin_types = defaultdict(warn_dtype_thin)
+event_header_thin_types[6.5] = event_header_thin_dtype_65xxx
+event_header_thin_types[7.3] = event_header_thin_dtype_73xxx
+event_header_thin_types[7.4] = event_header_thin_dtype_74xxx
+event_header_thin_types[7.5] = event_header_thin_dtype_75xxx
+event_header_thin_types[7.6] = event_header_thin_dtype_76xxx
+event_header_thin_types[7.7] = event_header_thin_dtype_76xxx

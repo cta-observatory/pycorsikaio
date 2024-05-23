@@ -1,11 +1,12 @@
 import gzip
 import struct
 
-from .constants import BLOCK_SIZE_BYTES
+from .constants import BLOCK_SIZE_BYTES, BLOCK_SIZE_BYTES_THIN
 
 
 #: buffersize for files not written as fortran sequential file
 DEFAULT_BUFFER_SIZE = BLOCK_SIZE_BYTES * 100
+DEFAULT_BUFFER_SIZE_THIN = BLOCK_SIZE_BYTES_THIN * 100
 #: struct definition of the fortran record marker
 RECORD_MARKER = struct.Struct('i')
 
@@ -58,9 +59,14 @@ def read_buffer_size(path):
     return buffer_size
 
 
-def iter_blocks(f):
+def iter_blocks(f, thinning=False):
     is_fortran_file = True
-    buffer_size = DEFAULT_BUFFER_SIZE
+    if thinning == False:
+        block_size = BLOCK_SIZE_BYTES
+        buffer_size = DEFAULT_BUFFER_SIZE
+    else:
+        block_size = BLOCK_SIZE_BYTES_THIN
+        buffer_size = DEFAULT_BUFFER_SIZE_THIN
 
 
     data = f.read(4)
@@ -89,13 +95,13 @@ def iter_blocks(f):
             if len(data) == 0:
                 return
 
-        n_blocks, rest = divmod(len(data), BLOCK_SIZE_BYTES)
+        n_blocks, rest = divmod(len(data), block_size)
         if rest != 0:
             raise IOError("Read less bytes than expected, file seems to be truncated")
 
         for block in range(n_blocks):
-            start = block * BLOCK_SIZE_BYTES
-            stop = start + BLOCK_SIZE_BYTES
+            start = block * block_size
+            stop = start + block_size
             block = data[start:stop]
             yield block
 
@@ -104,7 +110,7 @@ def iter_blocks(f):
             f.read(RECORD_MARKER.size)
 
 
-def read_block(f, buffer_size=None):
+def read_block(f, thinning=False, buffer_size=None):
     '''
     Reads a block of CORSIKA output, e.g. 273 4-byte floats.
 
@@ -113,6 +119,10 @@ def read_block(f, buffer_size=None):
     integer (the buffer size)
     before and after each block, which has to be skipped.
     '''
+    if thinning == False:
+        block_size = BLOCK_SIZE_BYTES
+    else:
+        block_size = BLOCK_SIZE_BYTES_THIN
     if buffer_size is not None:
         pos = f.tell()
         if pos == 0:
@@ -121,8 +131,8 @@ def read_block(f, buffer_size=None):
         if (pos + 4) % (buffer_size + 8) == 0:
             f.read(8)
 
-    block = f.read(BLOCK_SIZE_BYTES)
-    if len(block) < BLOCK_SIZE_BYTES:
+    block = f.read(block_size)
+    if len(block) < block_size:
         raise IOError("Read less bytes than expected, file seems to be truncated")
 
     return block

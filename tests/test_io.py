@@ -16,6 +16,7 @@ def test_fortran_raw():
 
     assert read_buffer_size('tests/resources/mmcs65') is None
     assert read_buffer_size('tests/resources/corsika74100') == 22932  # standard CORSIKA buffer size
+    assert read_buffer_size('tests/resources/corsika76900_thin') == 26208  # standard CORSIKA buffer size for thin file
 
 
 def test_fortran_raw_file():
@@ -32,7 +33,7 @@ def test_read_block():
     for path in test_files:
         buffer_size = read_buffer_size(path)
         with open(path, 'rb') as f:
-            block = read_block(f, buffer_size)
+            block = read_block(f, False, buffer_size)
         assert block[:4] == b'RUNH'
 
 
@@ -149,10 +150,10 @@ def test_versions():
         buffer_size = read_buffer_size(path)
 
         with open(path, 'rb') as f:
-            block = read_block(f, buffer_size)
+            block = read_block(f, False, buffer_size)
             assert get_version(block, RUNH_VERSION_POSITION) == version
 
-            block = read_block(f, buffer_size)
+            block = read_block(f, False, buffer_size)
             assert get_version(block, EVTH_VERSION_POSITION) == version
 
 
