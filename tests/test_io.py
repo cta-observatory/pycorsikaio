@@ -6,22 +6,22 @@ from corsikaio.io import iter_blocks
 
 
 test_files = (
-    '../tests/resources/mmcs65',
-    '../tests/resources/corsika74100'
+    'tests/resources/mmcs65',
+    'tests/resources/corsika74100'
 )
 
 
 def test_fortran_raw():
     from corsikaio.io import read_buffer_size
 
-    assert read_buffer_size('../tests/resources/mmcs65') is None
-    assert read_buffer_size('../tests/resources/corsika74100') == 22932  # standard CORSIKA buffer size
+    assert read_buffer_size('tests/resources/mmcs65') is None
+    assert read_buffer_size('tests/resources/corsika74100') == 22932  # standard CORSIKA buffer size
 
 
 def test_fortran_raw_file():
     from corsikaio import CorsikaFile
 
-    events = [e for e in CorsikaFile('../tests/resources/corsika75700')]
+    events = [e for e in CorsikaFile('tests/resources/corsika75700')]
 
     assert len(events) == 10
 

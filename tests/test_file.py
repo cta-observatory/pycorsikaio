@@ -8,11 +8,11 @@ from corsikaio.io import RECORD_MARKER
 def test_version():
     from corsikaio import CorsikaFile
 
-    with CorsikaFile('../tests/resources/mmcs65') as f:
+    with CorsikaFile('tests/resources/mmcs65') as f:
         assert isinstance(f.version, float)
         assert f.version == 6.5
 
-    with CorsikaFile('../tests/resources/corsika74100') as f:
+    with CorsikaFile('tests/resources/corsika74100') as f:
         assert isinstance(f.version, float)
         assert f.version == 7.41
 
@@ -20,7 +20,7 @@ def test_version():
 def test_next():
     from corsikaio import CorsikaFile
 
-    with CorsikaFile('../tests/resources/mmcs65') as f:
+    with CorsikaFile('tests/resources/mmcs65') as f:
         i = 0
         for event in f:
             i += 1
@@ -31,7 +31,7 @@ def test_cherenkov():
 
     from corsikaio import CorsikaCherenkovFile
 
-    with CorsikaCherenkovFile('../tests/resources/mmcs65', mmcs=True) as f:
+    with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
         event = next(f)
         assert hasattr(event, 'photons')
 
@@ -39,7 +39,7 @@ def test_cherenkov():
 def test_headers():
     from corsikaio import CorsikaCherenkovFile
 
-    with CorsikaCherenkovFile('../tests/resources/mmcs65', mmcs=True) as f:
+    with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
         run_header, event_headers, run_end = f.read_headers()
 
     assert len(event_headers) == 1500
@@ -48,7 +48,7 @@ def test_headers():
 
 def test_accidental_evth():
     from corsikaio import CorsikaCherenkovFile
-    with CorsikaCherenkovFile('../tests/resources/accidental_evth.gz', mmcs=True) as f:
+    with CorsikaCherenkovFile('tests/resources/accidental_evth.gz', mmcs=True) as f:
         run_header, event_headers, run_end = f.read_headers()
         assert len(event_headers) == 1500
 
@@ -57,17 +57,17 @@ def test_run_end():
 
     from corsikaio import CorsikaCherenkovFile
 
-    with CorsikaCherenkovFile('../tests/resources/mmcs65', mmcs=True) as f:
+    with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
         assert f.run_end['n_events'] == 1500
 
-    with CorsikaCherenkovFile('../tests/resources/corsika75700', mmcs=True) as f:
+    with CorsikaCherenkovFile('tests/resources/corsika75700', mmcs=True) as f:
         assert f.run_end['n_events'] == 10
 
 
 def test_particle_longi():
     from corsikaio import CorsikaParticleFile
 
-    with CorsikaParticleFile('../tests/resources/corsika757_particle') as f:
+    with CorsikaParticleFile('tests/resources/corsika757_particle') as f:
         assert f.run_end['n_events'] == 10
 
         for i, e in enumerate(f, start=1):
@@ -78,7 +78,7 @@ def test_particle_longi():
 def test_particle_no_parse():
     from corsikaio import CorsikaParticleFile
 
-    with CorsikaParticleFile('../tests/resources/corsika757_particle', parse_blocks=False) as f:
+    with CorsikaParticleFile('tests/resources/corsika757_particle', parse_blocks=False) as f:
         n_read = 0
         for e in f:
             n_read += 1
@@ -110,7 +110,7 @@ def test_truncated(tmp_path, size):
     from corsikaio import CorsikaParticleFile
     path = tmp_path / "truncated.dat"
 
-    with open("../tests/resources/corsika757_particle", "rb") as f:
+    with open("tests/resources/corsika757_particle", "rb") as f:
         with path.open("wb") as out:
             out.write(f.read(size))
 
@@ -124,7 +124,7 @@ def test_longitudinal_parameters():
     '''Test event end blocks contain longitudinal parameters'''
     from corsikaio import CorsikaParticleFile
 
-    path = "../tests/resources/corsika_77500_particle"
+    path = "tests/resources/corsika_77500_particle"
 
     with CorsikaParticleFile(path) as f:
         n_events = 0
