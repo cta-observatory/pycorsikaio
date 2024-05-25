@@ -16,6 +16,10 @@ def test_version():
         assert isinstance(f.version, float)
         assert f.version == 7.41
 
+    with CorsikaFile('tests/resources/corsika76900_thin', thinning = True) as f:
+        assert isinstance(f.version, float)
+        assert f.version == 7.69
+
 
 def test_next():
     from corsikaio import CorsikaFile
