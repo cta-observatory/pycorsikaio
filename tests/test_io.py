@@ -16,6 +16,7 @@ def test_fortran_raw():
 
     assert read_buffer_size('tests/resources/mmcs65') is None
     assert read_buffer_size('tests/resources/corsika74100') == 22932  # standard CORSIKA buffer size
+    assert read_buffer_size('tests/resources/corsika76900_thin') == 26208  # standard CORSIKA buffer size for thin file
 
 
 def test_fortran_raw_file():

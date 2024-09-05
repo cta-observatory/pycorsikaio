@@ -30,12 +30,21 @@ def test_next():
             i += 1
     assert i == 1500
 
+    with CorsikaFile('tests/resources/corsika76900_thin', thinning=True) as f:
+        i = 0
+        for event in f:
+            i += 1
+    assert i == 200
 
 def test_cherenkov():
 
     from corsikaio import CorsikaCherenkovFile
 
     with CorsikaCherenkovFile('tests/resources/mmcs65', mmcs=True) as f:
+        event = next(f)
+        assert hasattr(event, 'photons')
+
+    with CorsikaCherenkovFile('tests/resources/cer_corsika76900_thin', thinning=True) as f:
         event = next(f)
         assert hasattr(event, 'photons')
 
@@ -48,6 +57,12 @@ def test_headers():
 
     assert len(event_headers) == 1500
     assert run_end['n_events'] == 1500
+
+    with CorsikaCherenkovFile('tests/resources/cer_corsika76900_thin', thinning=True) as f:
+        run_header, event_headers, run_end = f.read_headers()
+
+    assert len(event_headers) == 200
+    assert run_end['n_events'] == 200
 
 
 def test_accidental_evth():
@@ -66,6 +81,9 @@ def test_run_end():
 
     with CorsikaCherenkovFile('tests/resources/corsika75700', mmcs=True) as f:
         assert f.run_end['n_events'] == 10
+
+    with CorsikaCherenkovFile('tests/resources/cer_corsika76900_thin', thinning=True) as f:
+        assert f.run_end['n_events'] == 200
 
 
 def test_particle_longi():
@@ -92,6 +110,17 @@ def test_particle_no_parse():
             assert len(e.header) == 273
             assert e.particles.size % 273 == 0
         assert n_read == 10
+
+    with CorsikaParticleFile('tests/resources/corsika76900_thin', thinning=True, parse_blocks=False) as f:
+        n_read = 0
+        for e in f:
+            n_read += 1
+            # second entry in header is event_number
+            assert e.header[1] == n_read
+            assert e.header.dtype == np.float32
+            assert len(e.header) == 312
+            assert e.particles.size % 312 == 0
+        assert n_read == 200
 
 
 
