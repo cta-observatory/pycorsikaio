@@ -34,7 +34,7 @@ def test_next():
         i = 0
         for event in f:
             i += 1
-    assert i == 200
+    assert i == 5
 
 def test_cherenkov():
 
@@ -120,7 +120,7 @@ def test_particle_no_parse():
             assert e.header.dtype == np.float32
             assert len(e.header) == 312
             assert e.particles.size % 312 == 0
-        assert n_read == 200
+        assert n_read == 5
 
 
 
