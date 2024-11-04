@@ -8,11 +8,11 @@ def test_longitudinal(slant):
     from corsikaio import longitudinal_fit_function
 
     if slant:
-        path = "./tests/resources/corsika_77500_particle_slant.long"
+        path = "tests/resources/corsika_77500_particle_slant.long"
         n_steps = 105
         width = 10
     else:
-        path = "./tests/resources/corsika_77500_particle_vertical.long"
+        path = "tests/resources/corsika_77500_particle_vertical.long"
         n_steps = 208
         width = 5
 

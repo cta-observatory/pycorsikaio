@@ -39,9 +39,16 @@ event_end_fields_7x = [
 event_end_dtype_65 = build_dtype(event_end_fields_65)
 event_end_dtype_7x = build_dtype(event_end_fields_7x)
 
+event_end_thin_dtype_65 = build_dtype(event_end_fields_65, itemsize = 4 * 312)
+event_end_thin_dtype_7x = build_dtype(event_end_fields_7x, itemsize = 4 * 312)
+
 def warn_dtype():
     warnings.warn("Version unknown, using default event end definition dtype of version 7.x")
     return event_end_dtype_7x
+
+def warn_dtype_thin():
+    warnings.warn("Version unknown, using default event end definition dtype of version 7.x")
+    return event_end_thin_dtype_7x
 
 def warn_fields():
     warnings.warn("Version unknown, using default event end fields definition of version 7.x")
@@ -60,3 +67,10 @@ event_end_types[7.4] = event_end_dtype_7x
 event_end_types[7.5] = event_end_dtype_7x
 event_end_types[7.6] = event_end_dtype_7x
 event_end_types[7.7] = event_end_dtype_7x
+
+event_end_thin_types = defaultdict(warn_dtype)
+event_end_thin_types[6.5] = event_end_thin_dtype_65
+event_end_thin_types[7.4] = event_end_thin_dtype_7x
+event_end_thin_types[7.5] = event_end_thin_dtype_7x
+event_end_thin_types[7.6] = event_end_thin_dtype_7x
+event_end_thin_types[7.7] = event_end_thin_dtype_7x

@@ -12,6 +12,12 @@ cherenkov_photons_fields = [
 
 cherenkov_photons_dtype = build_dtype(cherenkov_photons_fields, itemsize=None)
 
+cherenkov_photons_fields_thin = cherenkov_photons_fields + [
+    Field(8, "thinning_weight", dtype="float32"),
+]
+
+cherenkov_photons_thin_dtype = build_dtype(cherenkov_photons_fields_thin, itemsize=None)
+
 mmcs_cherenkov_photons_fields = [
     Field(1, "n_photons", dtype="float32"),
     Field(2, "x", unit="cm", dtype="float32"),
@@ -37,3 +43,9 @@ particle_data_fields = [
 ]
 
 particle_data_dtype = build_dtype(particle_data_fields, itemsize=None)
+
+particle_data_fields_thin = particle_data_fields + [
+    Field(8, "thinning_weight", dtype="float32"),
+]
+
+particle_data_thin_dtype = build_dtype(particle_data_fields_thin, itemsize=None)

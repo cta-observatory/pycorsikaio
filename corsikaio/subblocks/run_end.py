@@ -8,3 +8,4 @@ run_end_fields = [
 ]
 
 run_end_dtype = build_dtype(run_end_fields)
+run_end_thin_dtype = build_dtype(run_end_fields, itemsize = 4 * 312)
