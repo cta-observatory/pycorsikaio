@@ -1,5 +1,11 @@
+from contextlib import ExitStack
+import gzip
+from pathlib import Path
+
 import pytest
 import numpy as np
+
+from zstandard import ZstdCompressor
 
 from corsikaio.constants import BLOCK_SIZE_BYTES
 from corsikaio.io import RECORD_MARKER
@@ -167,3 +173,40 @@ def test_longitudinal_parameters():
             parameters = event.end["longitudinal_fit_parameters"]
             np.testing.assert_array_equal(parameters != 0, True)
         assert n_events == 5
+
+
+@pytest.mark.parametrize (
+    "test_path",
+    [
+        'tests/resources/mmcs65',
+        'tests/resources/corsika74100',
+    ]
+)
+@pytest.mark.parametrize( "compression", ["gz", "zst"])
+def test_compressed(test_path, compression, tmp_path):
+    from corsikaio import CorsikaCherenkovFile
+
+    test_path = Path(test_path)
+    compressed = tmp_path / f"{test_path.name}.{compression}"
+
+    ctx = ExitStack()
+
+    with ctx:
+        infile = ctx.enter_context(test_path.open("rb"))
+        outfile = ctx.enter_context(compressed.open("wb"))
+
+        if compression == "gz":
+            outstream = ctx.enter_context(gzip.GzipFile(fileobj=outfile, mode="wb"))
+        elif compression == "zst":
+            compressor = ZstdCompressor(level=10)
+            outstream = ctx.enter_context(compressor.stream_writer(outfile))
+        else:
+            raise ValueError(f"Unknown compression: {compression}")
+
+        for chunk in iter(lambda : infile.read(102400), b""):
+            outstream.write(chunk)
+
+    with CorsikaCherenkovFile(compressed) as cf, CorsikaCherenkovFile(test_path) as f:
+        for event in f:
+            compressed_event = next(cf)
+            assert event.header["event_number"] == compressed_event.header["event_number"]
