@@ -1,5 +1,6 @@
-from contextlib import ExitStack
 import gzip
+import secrets
+from contextlib import ExitStack
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,7 @@ import numpy as np
 from zstandard import ZstdCompressor
 
 from corsikaio.constants import BLOCK_SIZE_BYTES
+from corsikaio.file import CorsikaCherenkovFile
 from corsikaio.io import RECORD_MARKER
 
 
@@ -210,3 +212,22 @@ def test_compressed(test_path, compression, tmp_path):
         for event in f:
             compressed_event = next(cf)
             assert event.header["event_number"] == compressed_event.header["event_number"]
+
+
+
+def test_eventio(tmp_path):
+    from corsikaio.io import MagicBytes
+    dummy_eventio = tmp_path / "test.eventio"
+    dummy_eventio_zst = tmp_path / "test.eventio.zst"
+
+    dummy_data = secrets.token_bytes(1024)
+    payload = MagicBytes.EVENTIO_LE.value + dummy_data
+    dummy_eventio.write_bytes(payload)
+    comp = ZstdCompressor()
+    dummy_eventio_zst.write_bytes(comp.compress(payload))
+
+    with pytest.raises(ValueError, match="eventio"):
+        CorsikaCherenkovFile(dummy_eventio)
+
+    with pytest.raises(ValueError, match="eventio"):
+        CorsikaCherenkovFile(dummy_eventio_zst)
