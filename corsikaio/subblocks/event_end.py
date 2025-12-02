@@ -60,6 +60,7 @@ event_end_fields[7.4] = event_end_fields_7x
 event_end_fields[7.5] = event_end_fields_7x
 event_end_fields[7.6] = event_end_fields_7x
 event_end_fields[7.7] = event_end_fields_7x
+event_end_fields[7.8] = event_end_fields_7x
 
 event_end_types = defaultdict(warn_dtype)
 event_end_types[6.5] = event_end_dtype_65
@@ -67,6 +68,7 @@ event_end_types[7.4] = event_end_dtype_7x
 event_end_types[7.5] = event_end_dtype_7x
 event_end_types[7.6] = event_end_dtype_7x
 event_end_types[7.7] = event_end_dtype_7x
+event_end_types[7.8] = event_end_dtype_7x
 
 event_end_thin_types = defaultdict(warn_dtype)
 event_end_thin_types[6.5] = event_end_thin_dtype_65
@@ -74,3 +76,4 @@ event_end_thin_types[7.4] = event_end_thin_dtype_7x
 event_end_thin_types[7.5] = event_end_thin_dtype_7x
 event_end_thin_types[7.6] = event_end_thin_dtype_7x
 event_end_thin_types[7.7] = event_end_thin_dtype_7x
+event_end_thin_types[7.8] = event_end_thin_dtype_7x

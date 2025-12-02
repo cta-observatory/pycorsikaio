@@ -99,6 +99,7 @@ run_header_fields[7.4] = run_header_fields_7x
 run_header_fields[7.5] = run_header_fields_7x
 run_header_fields[7.6] = run_header_fields_7x
 run_header_fields[7.7] = run_header_fields_7x
+run_header_fields[7.8] = run_header_fields_7x
 
 run_header_types = defaultdict(warn_dtype)
 run_header_types[6.5] = run_header_dtype_65
@@ -106,6 +107,7 @@ run_header_types[7.4] = run_header_dtype_7x
 run_header_types[7.5] = run_header_dtype_7x
 run_header_types[7.6] = run_header_dtype_7x
 run_header_types[7.7] = run_header_dtype_7x
+run_header_types[7.8] = run_header_dtype_7x
 
 run_header_thin_types = defaultdict(warn_dtype_thin)
 run_header_thin_types[6.5] = run_header_thin_dtype_65
@@ -113,3 +115,4 @@ run_header_thin_types[7.4] = run_header_thin_dtype_7x
 run_header_thin_types[7.5] = run_header_thin_dtype_7x
 run_header_thin_types[7.6] = run_header_thin_dtype_7x
 run_header_thin_types[7.7] = run_header_thin_dtype_7x
+run_header_thin_types[7.8] = run_header_thin_dtype_7x
