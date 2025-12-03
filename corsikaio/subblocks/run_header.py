@@ -58,6 +58,7 @@ run_header_fields_7x = [
     Field(77, "inclined_observation_plane_z", unit="cm"),
     Field(78, "inclined_observation_plane_theta", unit="deg"),
     Field(79, "inclined_observation_plane_phi", unit="deg"),
+    Field(92, "rotation_angle_to_true_north", unit="deg"),
     Field(93, "n_showers"),  # Says 94 in the userguide, but it's 93
     Field(94 + 1, "cka", shape=40),
     Field(134 + 1, "ceta", shape=5),
