@@ -2,10 +2,10 @@ from collections import namedtuple, defaultdict
 import numpy as np
 
 
-Field = namedtuple("Field", ["position", "name", "unit", "shape", "dtype"])
+Field = namedtuple("Field", ["position", "name", "unit", "shape", "dtype", "min_version"])
 
-# set defaults for unit, shape and dtype, this works for the 3 right most attributes
-Field.__new__.__defaults__ = (None, 1, "f4")
+# set defaults for unit, shape, dtype and min_version; works for the 4 right most attributes
+Field.__new__.__defaults__ = (None, 1, "f4", 0)
 
 
 def build_dtype(fields, itemsize=4 * 273):
