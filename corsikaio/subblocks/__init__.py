@@ -27,13 +27,11 @@ __all__ = [
 
 def parse_run_header(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
-    version = float(str(version))
     return np.frombuffer(run_header_bytes, dtype=get_run_header_types(version))
 
 
 def parse_run_header_thin(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
-    version = float(str(version))
     return np.frombuffer(run_header_bytes, dtype=get_run_header_thin_types(version))
 
 
@@ -47,27 +45,25 @@ def parse_run_end_thin(run_end_bytes):
 
 def parse_event_header(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    version = float(str(version))
     return np.frombuffer(event_header_bytes, dtype=get_event_header_types(version))
 
 
 def parse_event_header_thin(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    version = float(str(version))
     return np.frombuffer(event_header_bytes, dtype=get_event_header_thin_types(version))
 
 
 def parse_event_end(event_end_bytes, version):
-    return np.frombuffer(event_end_bytes, dtype=get_event_end_types(float(str(version))))
+    return np.frombuffer(event_end_bytes, dtype=get_event_end_types(np.float32(version)))
 
 
 def parse_event_end_thin(event_end_bytes, version):
-    return np.frombuffer(event_end_bytes, dtype=get_event_end_thin_types(float(str(version))))
+    return np.frombuffer(event_end_bytes, dtype=get_event_end_thin_types(np.float32(version)))
 
 
 def get_version(header_bytes, version_pos):
     sl = slice(4 * (version_pos - 1), 4 * version_pos)
-    return round(struct.unpack("f", header_bytes[sl])[0], 4)
+    return np.float32(struct.unpack("f", header_bytes[sl])[0])
 
 
 def parse_data_block(data_block_bytes, dtype):
