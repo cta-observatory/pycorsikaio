@@ -1,79 +1,55 @@
 import warnings
-from collections import defaultdict
+
+from functools import lru_cache
 
 from .dtypes import build_dtype, Field
 
-event_end_fields_65 = [
-    Field(1, "event_end", dtype="S4"),
-    Field(2, "event_number"),
-    Field(3, "n_photons_weighted"),
-    Field(4, "n_electrons_weighted"),
-    Field(5, "n_hadrons_weighted"),
-    Field(6, "n_muons_weighted"),
-    Field(7, "n_particles_written"),
-    Field(262, "chi_square_longitudinal"),
-    Field(263, "n_photons_written"),
-    Field(264, "n_electrons_written"),
-    Field(265, "n_hadrons_written"),
-    Field(266, "n_muons_written"),
-    Field(267, "n_em_particles_preshower"),
+event_end_fields = [
+    Field(1, "event_end", dtype="S4", min_version=6.5000),
+    Field(2, "event_number", min_version=6.5000),
+    Field(3, "n_photons_weighted", min_version=6.5000),
+    Field(4, "n_electrons_weighted", min_version=6.5000),
+    Field(5, "n_hadrons_weighted", min_version=6.5000),
+    Field(6, "n_muons_weighted", min_version=6.5000),
+    Field(7, "n_particles_written", min_version=6.5000),
+    Field(256, "longitudinal_fit_parameters", shape=6, min_version=7.3000),
+    Field(262, "chi_square_longitudinal", min_version=6.5000),
+    Field(263, "n_photons_written", min_version=6.5000),
+    Field(264, "n_electrons_written", min_version=6.5000),
+    Field(265, "n_hadrons_written", min_version=6.5000),
+    Field(266, "n_muons_written", min_version=6.5000),
+    Field(267, "n_em_particles_preshower", min_version=6.5000),
 ]
 
-event_end_fields_7x = [
-    Field(1, "event_end", dtype="S4"),
-    Field(2, "event_number"),
-    Field(3, "n_photons_weighted"),
-    Field(4, "n_electrons_weighted"),
-    Field(5, "n_hadrons_weighted"),
-    Field(6, "n_muons_weighted"),
-    Field(7, "n_particles_written"),
-    Field(256, "longitudinal_fit_parameters", shape=6),
-    Field(262, "chi_square_longitudinal"),
-    Field(263, "n_photons_written"),
-    Field(264, "n_electrons_written"),
-    Field(265, "n_hadrons_written"),
-    Field(266, "n_muons_written"),
-    Field(267, "n_em_particles_preshower"),
- ]
 
-event_end_dtype_65 = build_dtype(event_end_fields_65)
-event_end_dtype_7x = build_dtype(event_end_fields_7x)
+_min_supported_version = min(field.min_version for field in event_end_fields)
 
-event_end_thin_dtype_65 = build_dtype(event_end_fields_65, itemsize = 4 * 312)
-event_end_thin_dtype_7x = build_dtype(event_end_fields_7x, itemsize = 4 * 312)
 
-def warn_dtype():
-    warnings.warn("Version unknown, using default event end definition dtype of version 7.x")
-    return event_end_dtype_7x
+def _normalize_version(version):
+    if version is None:
+        warnings.warn("Version unknown, using earliest event end definition")
+        return _min_supported_version
+    if version < _min_supported_version:
+        warnings.warn(
+            f"Version {version} older than supported {_min_supported_version}; "
+            "using earliest definition"
+        )
+        return _min_supported_version
+    return version
 
-def warn_dtype_thin():
-    warnings.warn("Version unknown, using default event end definition dtype of version 7.x")
-    return event_end_thin_dtype_7x
 
-def warn_fields():
-    warnings.warn("Version unknown, using default event end fields definition of version 7.x")
-    return event_end_fields_7x
+def get_event_end_fields(version):
+    version = _normalize_version(version)
+    return [field for field in event_end_fields if field.min_version <= version]
 
-event_end_fields = defaultdict(warn_fields)
-event_end_fields[6.5] = event_end_fields_65
-event_end_fields[7.4] = event_end_fields_7x
-event_end_fields[7.5] = event_end_fields_7x
-event_end_fields[7.6] = event_end_fields_7x
-event_end_fields[7.7] = event_end_fields_7x
-event_end_fields[7.8] = event_end_fields_7x
 
-event_end_types = defaultdict(warn_dtype)
-event_end_types[6.5] = event_end_dtype_65
-event_end_types[7.4] = event_end_dtype_7x
-event_end_types[7.5] = event_end_dtype_7x
-event_end_types[7.6] = event_end_dtype_7x
-event_end_types[7.7] = event_end_dtype_7x
-event_end_types[7.8] = event_end_dtype_7x
+@lru_cache(maxsize=None)
+def get_event_end_types(version):
+    version = _normalize_version(version)
+    return build_dtype(get_event_end_fields(version))
 
-event_end_thin_types = defaultdict(warn_dtype)
-event_end_thin_types[6.5] = event_end_thin_dtype_65
-event_end_thin_types[7.4] = event_end_thin_dtype_7x
-event_end_thin_types[7.5] = event_end_thin_dtype_7x
-event_end_thin_types[7.6] = event_end_thin_dtype_7x
-event_end_thin_types[7.7] = event_end_thin_dtype_7x
-event_end_thin_types[7.8] = event_end_thin_dtype_7x
+
+@lru_cache(maxsize=None)
+def get_event_end_thin_types(version):
+    version = _normalize_version(version)
+    return build_dtype(get_event_end_fields(version), itemsize=4 * 312)

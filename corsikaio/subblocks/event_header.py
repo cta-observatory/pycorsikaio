@@ -3,7 +3,7 @@ from functools import lru_cache
 
 from .dtypes import Field, build_dtype
 
-# 6.5 exact version numbering TO BE CONFIRMED
+# 6.5 confirmed from manual
 event_header_fields = [
     Field(1, "event_header", dtype="S4", min_version=6.5000),
     Field(2, "event_number", min_version=6.5000),
@@ -85,7 +85,6 @@ event_header_fields = [
     Field(154, "viewcone_outer_angle", unit="deg", min_version=6.5000),
     Field(155, "transition_energy_low_high_energy_model", unit="GeV", min_version=6.5000),
     # Extended for version 7.3XXX (confirmed from manual)
-    # TO BE CONFIRMED
     Field(156, "skimming_incidence_flag", min_version=7.3000),
     Field(157, "horizontal_shower_exis_altitude", unit="cm", min_version=7.3000),
     Field(158, "starting_height", unit="cm", min_version=7.3000),

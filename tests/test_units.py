@@ -3,8 +3,6 @@
 from corsikaio.subblocks.dtypes import Field
 from corsikaio.subblocks import get_units_from_fields
 
-from corsikaio.subblocks.run_header import run_header_fields
-from corsikaio.subblocks.event_header import event_header_fields
 from corsikaio.subblocks.data import (
     particle_data_fields,
     cherenkov_photons_fields,
@@ -26,9 +24,10 @@ def test_new_field():
 
 def test_event_end_units():
     
-    for version in event_end_fields:
-        
-        assert all([f.unit is None for f in event_end_fields[version]])
+    assert all(
+        hasattr(f, "unit") and f.unit is None
+        for f in event_end_fields
+    )
 
 
 def test_run_end_units():

@@ -1,11 +1,11 @@
 import numpy as np
 import struct
 
-from .run_header import run_header_types, run_header_thin_types
+from .run_header import get_run_header_types, get_run_header_thin_types
 from .run_end import run_end_dtype, run_end_thin_dtype
 
 from .event_header import get_event_header_types, get_event_header_thin_types
-from .event_end import event_end_types, event_end_thin_types
+from .event_end import get_event_end_types, get_event_end_thin_types
 
 from .data import cherenkov_photons_dtype, cherenkov_photons_thin_dtype, particle_data_dtype, particle_data_thin_dtype
 from .longitudinal import longitudinal_data_dtype
@@ -29,14 +29,14 @@ def parse_run_header(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
     # get corsika minor version (Truncate the float after first digit)
     version = float(str(version)[:3])
-    return np.frombuffer(run_header_bytes, dtype=run_header_types[version])
+    return np.frombuffer(run_header_bytes, dtype=get_run_header_types(version))
 
 
 def parse_run_header_thin(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
     # get corsika minor version (Truncate the float after first digit)
     version = float(str(version)[:3])
-    return np.frombuffer(run_header_bytes, dtype=run_header_thin_types[version])
+    return np.frombuffer(run_header_bytes, dtype=get_run_header_thin_types(version))
 
 
 def parse_run_end(run_end_bytes):
@@ -59,12 +59,12 @@ def parse_event_header_thin(event_header_bytes):
     return np.frombuffer(event_header_bytes, dtype=get_event_header_thin_types(version))
 
 
-def parse_event_end(event_end_bytes,version):
-    return np.frombuffer(event_end_bytes, dtype=event_end_types[float(str(version)[:3])])
+def parse_event_end(event_end_bytes, version):
+    return np.frombuffer(event_end_bytes, dtype=get_event_end_types(float(str(version))))
 
 
-def parse_event_end_thin(event_end_bytes,version):
-    return np.frombuffer(event_end_bytes, dtype=event_end_thin_types[float(str(version)[:3])])
+def parse_event_end_thin(event_end_bytes, version):
+    return np.frombuffer(event_end_bytes, dtype=get_event_end_thin_types(float(str(version))))
 
 
 def get_version(header_bytes, version_pos):
