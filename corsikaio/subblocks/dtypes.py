@@ -1,4 +1,5 @@
 from collections import namedtuple, defaultdict
+import warnings
 import numpy as np
 
 
@@ -23,3 +24,18 @@ def build_dtype(fields, itemsize=4 * 273):
 
     return np.dtype(dict(**dt))
 
+
+def normalize_version(version, fields, subblock_name):
+    """Normalize version number and warn if None or too old."""
+    min_supported_version = min(field.min_version for field in fields)
+    
+    if version is None:
+        warnings.warn(f"Version unknown, using earliest {subblock_name} definition")
+        return min_supported_version
+    if version < min_supported_version:
+        warnings.warn(
+            f"Version {version} older than supported {min_supported_version}; "
+            "using earliest definition"
+        )
+        return min_supported_version
+    return version

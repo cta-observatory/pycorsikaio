@@ -1,7 +1,6 @@
-import warnings
 from functools import lru_cache
 
-from .dtypes import Field, build_dtype
+from .dtypes import Field, build_dtype, normalize_version
 
 event_header_fields = [
     Field(1, "event_header", dtype="S4", min_version=6.5000),
@@ -124,34 +123,19 @@ event_header_fields = [
     Field(231, "fluka_version", min_version=7.7600),
 ]
 
-_min_supported_version = min(field.min_version for field in event_header_fields)
-
-
-def _normalize_version(version):
-    if version is None:
-        warnings.warn("Version unknown, using earliest event header definition")
-        return _min_supported_version
-    if version < _min_supported_version:
-        warnings.warn(
-            f"Version {version} older than supported {_min_supported_version}; "
-            "using earliest definition"
-        )
-        return _min_supported_version
-    return version
-
 
 def get_event_header_fields(version):
-    version = _normalize_version(version)
+    version = normalize_version(version, event_header_fields, "event header")
     return [field for field in event_header_fields if field.min_version <= version]
 
 
 @lru_cache(maxsize=None)
 def get_event_header_types(version):
-    version = _normalize_version(version)
+    version = normalize_version(version, event_header_fields, "event header")
     return build_dtype(get_event_header_fields(version))
 
 
 @lru_cache(maxsize=None)
 def get_event_header_thin_types(version):
-    version = _normalize_version(version)
+    version = normalize_version(version, event_header_fields, "event header")
     return build_dtype(get_event_header_fields(version), itemsize=4 * 312)

@@ -1,5 +1,4 @@
-import warnings
-from .dtypes import Field, build_dtype
+from .dtypes import Field, build_dtype, normalize_version
 
 from functools import lru_cache
 
@@ -42,34 +41,18 @@ run_header_fields = [
 ]
 
 
-_min_supported_version = min(field.min_version for field in run_header_fields)
-
-
-def _normalize_version(version):
-    if version is None:
-        warnings.warn("Version unknown, using earliest run header definition")
-        return _min_supported_version
-    if version < _min_supported_version:
-        warnings.warn(
-            f"Version {version} older than supported {_min_supported_version}; "
-            "using earliest definition"
-        )
-        return _min_supported_version
-    return version
-
-
 def get_run_header_fields(version):
-    version = _normalize_version(version)
+    version = normalize_version(version, run_header_fields, "run header")
     return [field for field in run_header_fields if field.min_version <= version]
 
 
 @lru_cache(maxsize=None)
 def get_run_header_types(version):
-    version = _normalize_version(version)
+    version = normalize_version(version, run_header_fields, "run header")
     return build_dtype(get_run_header_fields(version))
 
 
 @lru_cache(maxsize=None)
 def get_run_header_thin_types(version):
-    version = _normalize_version(version)
+    version = normalize_version(version, run_header_fields, "run header")
     return build_dtype(get_run_header_fields(version), itemsize=4 * 312)
