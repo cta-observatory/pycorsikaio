@@ -4,3 +4,40 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "corsikaio/_version.py"
+
+[project]
+name = "corsikaio"
+description = "Reader for corsika binary output files using numpy"
+readme = { file = "README.md", content-type = "text/markdown" }
+urls = { Homepage = "http://github.com/cta-observatory/pycorsikaio" }
+maintainers = [
+    { name = "Maximilian Linhoff", email = "maximilian.linhoff@cta-observatory.org" }
+]
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+]
+
+dynamic = ["version"]
+
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages]
+find = { exclude = ["corsikaio._dev_version*"] }
+
+[project.optional-dependencies]
+dev = ["setuptools_scm[toml]"]
+zstd = ["zstandard"]
+tests = ["pytest", "scipy"]
+all = [
+    "corsikaio[zstd,tests]",
+]
+
+[tool.pytest.ini_options]
+addopts = "-v"
+
+[tool.flake8]
+max-line-length = 90
