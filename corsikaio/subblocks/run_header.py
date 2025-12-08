@@ -26,6 +26,7 @@ run_header_fields = [
     Field(77, "inclined_observation_plane_z", unit="cm", min_version=np.float32(7.3)),
     Field(78, "inclined_observation_plane_theta", unit="deg", min_version=np.float32(7.3)),
     Field(79, "inclined_observation_plane_phi", unit="deg", min_version=np.float32(7.3)),
+    Field(92, "rotation_angle_to_true_north", unit="deg", min_version=np.float32(7.75)),
     Field(93, "n_showers", min_version=np.float32(7.4)),  # typo in the 7.400 manual
     Field(94 + 1, "cka", shape=40, min_version=np.float32(6.5)),
     Field(134 + 1, "ceta", shape=5, min_version=np.float32(6.5)),
