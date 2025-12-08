@@ -27,15 +27,13 @@ __all__ = [
 
 def parse_run_header(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
-    # get corsika minor version (Truncate the float after first digit)
-    version = float(str(version)[:3])
+    version = float(str(version))
     return np.frombuffer(run_header_bytes, dtype=get_run_header_types(version))
 
 
 def parse_run_header_thin(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
-    # get corsika minor version (Truncate the float after first digit)
-    version = float(str(version)[:3])
+    version = float(str(version))
     return np.frombuffer(run_header_bytes, dtype=get_run_header_thin_types(version))
 
 
@@ -49,13 +47,13 @@ def parse_run_end_thin(run_end_bytes):
 
 def parse_event_header(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    version = float(str(version)[:3])
+    version = float(str(version))
     return np.frombuffer(event_header_bytes, dtype=get_event_header_types(version))
 
 
 def parse_event_header_thin(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    version = float(str(version)[:3])
+    version = float(str(version))
     return np.frombuffer(event_header_bytes, dtype=get_event_header_thin_types(version))
 
 
