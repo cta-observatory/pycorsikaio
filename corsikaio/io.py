@@ -61,23 +61,26 @@ def read_buffer_size(path):
 
 def iter_blocks(f, thinning=False):
     is_fortran_file = True
-    if thinning == False:
+    if not thinning:
         block_size = BLOCK_SIZE_BYTES
         buffer_size = DEFAULT_BUFFER_SIZE
     else:
         block_size = BLOCK_SIZE_BYTES_THIN
         buffer_size = DEFAULT_BUFFER_SIZE_THIN
 
-
     data = f.read(4)
-    f.seek(0)
+    first = True
     if data == b'RUNH':
         is_fortran_file = False
 
     while True:
         # for the fortran-chunked output, we need to read the record size
         if is_fortran_file:
-            data = f.read(RECORD_MARKER.size)
+            if first is True:
+                data = data + f.read(RECORD_MARKER.size - len(data))
+            else:
+                data = f.read(RECORD_MARKER.size)
+
             if len(data) == 0:
                 return
 
@@ -85,8 +88,14 @@ def iter_blocks(f, thinning=False):
                 raise IOError("Read less bytes than expected, file seems to be truncated")
 
             buffer_size, = RECORD_MARKER.unpack(data)
+            data = b""
 
-        data = f.read(buffer_size)
+        if first is True:
+            data = data + f.read(buffer_size - len(data))
+            first = False
+        else:
+            data = f.read(buffer_size)
+
         if is_fortran_file:
             if len(data) < buffer_size:
                 raise IOError("Read less bytes than expected, file seems to be truncated")
