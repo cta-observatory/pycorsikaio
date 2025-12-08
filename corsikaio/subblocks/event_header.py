@@ -1,4 +1,4 @@
-from functools import lru_cache
+from functools import cache
 
 from .dtypes import Field, build_dtype, normalize_version
 
