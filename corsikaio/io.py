@@ -1,5 +1,6 @@
 import gzip
 import struct
+from enum import Enum
 
 from .constants import BLOCK_SIZE_BYTES, BLOCK_SIZE_BYTES_THIN
 
@@ -11,34 +12,61 @@ DEFAULT_BUFFER_SIZE_THIN = BLOCK_SIZE_BYTES_THIN * 100
 RECORD_MARKER = struct.Struct('i')
 
 
-def is_gzip(path):
-    '''Test if a file is gzipped by reading its first two bytes and compare
-    to the gzip marker bytes.
-    '''
-    with open(path, 'rb') as f:
-        marker_bytes = f.read(2)
+class MagicBytes(Enum):
+    GZIP = b"\x1f\x8b"
+    ZSTD = b"\x28\xb5\x2f\xfd"
+    EVENTIO_LE = b"\x37\x8a\x1f\xd4"
+    EVENTIO_BE = b"\xd4\x1f\x8a\x37"
 
-    return marker_bytes[0] == 0x1f and marker_bytes[1] == 0x8b
+
+MAX_MARKER_LENGTH = max(len(marker.value) for marker in MagicBytes)
+
+
+def check_magic(magic, *, path=None, marker_bytes=None):
+    if (path is None) == (marker_bytes is None):
+        raise ValueError("Need to provide exactly one of path xor marker_bytes")
+
+    if marker_bytes is None:
+        with open(path, "rb") as f:
+            marker_bytes = f.read(MAX_MARKER_LENGTH)
+
+    expected = magic.value
+    return marker_bytes[: len(expected)] == expected
+
+
+def is_gzip(path):
+    """Test if a file is gzip compressed."""
+    return check_magic(MagicBytes.GZIP, path=path)
 
 
 def is_zstd(path):
-    '''Test if a file is compressed using zstd using its magic marker bytes
-    '''
-    with open(path, 'rb') as f:
-        marker_bytes = f.read(4)
+    """Test if a file is zstd compressed."""
+    return check_magic(MagicBytes.ZSTD, path=path)
 
-    return marker_bytes == b'\x28\xb5\x2f\xfd'
+
+class ClosingGzipFile(gzip.GzipFile):
+    """A wrapper around std lib GzipFile that auto-closes the underlying fobj."""
+
+    def close(self):
+        if self.fileobj is not None:
+            self.fileobj.close()
+        super().close()
 
 
 def open_compressed(path):
-    if is_gzip(path):
-        return gzip.open(path)
+    fobj = open(path, "rb")
+    marker_bytes = fobj.read(MAX_MARKER_LENGTH)
+    fobj.seek(0)
 
-    if is_zstd(path):
+    if check_magic(MagicBytes.GZIP, marker_bytes=marker_bytes):
+        return ClosingGzipFile(mode="rb", fileobj=fobj)
+
+    if check_magic(MagicBytes.ZSTD, marker_bytes=marker_bytes):
         from zstandard import ZstdDecompressor
-        return ZstdDecompressor().stream_reader(open(path, 'rb'))
 
-    return open(path, 'rb')
+        return ZstdDecompressor().stream_reader(fobj, closefd=True)
+
+    return fobj
 
 
 def read_buffer_size(path):
@@ -70,8 +98,11 @@ def iter_blocks(f, thinning=False):
 
     data = f.read(4)
     first = True
-    if data == b'RUNH':
+    if data == b"RUNH":
         is_fortran_file = False
+    elif data in (MagicBytes.EVENTIO_LE.value, MagicBytes.EVENTIO_BE.value):
+        msg = "This file is in eventio format, try opening with eventio.IACTFile"
+        raise ValueError(msg)
 
     while True:
         # for the fortran-chunked output, we need to read the record size

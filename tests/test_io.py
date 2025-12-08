@@ -169,3 +169,20 @@ def test_iter_blocks_truncated(size, tmp_path, dummy_file):
         with path.open("rb") as f:
             for _ in iter_blocks(f):
                 pass
+
+
+
+def test_autoclosing_gzip():
+    from corsikaio.io import ClosingGzipFile
+
+    # test with manual closing
+    fobj = open("./tests/resources/accidental_evth.gz")
+    wrapper = ClosingGzipFile(mode="rb", fileobj=fobj)
+    wrapper.close()
+    assert fobj.closed
+
+    # test with context
+    fobj = open("./tests/resources/accidental_evth.gz")
+    with ClosingGzipFile(mode="rb", fileobj=fobj):
+        pass
+    assert fobj.closed
