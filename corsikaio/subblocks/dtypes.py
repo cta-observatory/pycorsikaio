@@ -2,10 +2,11 @@ from collections import namedtuple, defaultdict
 import numpy as np
 
 
-Field = namedtuple("Field", ["position", "name", "unit", "shape", "dtype"])
-
-# set defaults for unit, shape and dtype, this works for the 3 right most attributes
-Field.__new__.__defaults__ = (None, 1, "f4")
+Field = namedtuple(
+    "Field",
+    ["position", "name", "unit", "shape", "dtype", "min_version"],
+    defaults=(None, 1, "f4", np.float32(0)),
+)
 
 
 def build_dtype(fields, itemsize=4 * 273):
@@ -23,3 +24,7 @@ def build_dtype(fields, itemsize=4 * 273):
 
     return np.dtype(dict(**dt))
 
+
+def filter_fields_by_version(fields, version):
+    """Return only fields whose min_version is <= the provided version."""
+    return [field for field in fields if field.min_version <= version]
