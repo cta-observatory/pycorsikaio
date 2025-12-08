@@ -3,7 +3,6 @@ from functools import lru_cache
 
 from .dtypes import Field, build_dtype
 
-# 6.5 confirmed from manual
 event_header_fields = [
     Field(1, "event_header", dtype="S4", min_version=6.5000),
     Field(2, "event_number", min_version=6.5000),
@@ -84,7 +83,6 @@ event_header_fields = [
     Field(153, "viewcone_inner_angle", unit="deg", min_version=6.5000),
     Field(154, "viewcone_outer_angle", unit="deg", min_version=6.5000),
     Field(155, "transition_energy_low_high_energy_model", unit="GeV", min_version=6.5000),
-    # Extended for version 7.3XXX (confirmed from manual)
     Field(156, "skimming_incidence_flag", min_version=7.3000),
     Field(157, "horizontal_shower_exis_altitude", unit="cm", min_version=7.3000),
     Field(158, "starting_height", unit="cm", min_version=7.3000),
@@ -103,7 +101,6 @@ event_header_fields = [
     Field(171, "conex_weight_limit_sampling_hadronic", min_version=7.3000),
     Field(172, "conex_weight_limit_sampling_muons", min_version=7.3000),
     Field(173, "conex_weight_limit_sampling_em", min_version=7.3000),
-    # Extended for version 7.5XXX (confirmed from manual)
     Field(174, "augerhit_stripes_half_width", unit="cm", min_version=7.5000),
     Field(175, "augerhit_detector_distance", unit="cm", min_version=7.5000),
     Field(176, "augerhit_reserved", min_version=7.5000),
@@ -116,7 +113,6 @@ event_header_fields = [
     Field(220, "icecube_energy_threshold", unit="GeV", min_version=7.5000),
     Field(221, "icecube_gzip_flag", min_version=7.5000),
     Field(222, "icecube_pipe_flag", min_version=7.5000),
-    # Extended for version 7.7XXX (confirmed from manual)
     Field(223, "coast_multi_thin_index", min_version=7.7400),
     Field(224, "coast_multi_thin_flag", min_version=7.7400),
     Field(225, "inclined_observation_plane_x", unit="cm", min_version=7.7500),
