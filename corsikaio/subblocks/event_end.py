@@ -1,7 +1,7 @@
 from functools import cache
 import numpy as np
 
-from .dtypes import build_dtype, Field
+from .dtypes import build_dtype, Field, filter_fields_by_version
 
 event_end_fields = [
     Field(1, "event_end", dtype="S4", min_version=np.float32(6.5)),
@@ -22,7 +22,7 @@ event_end_fields = [
 
 
 def get_event_end_fields(version):
-    return [field for field in event_end_fields if field.min_version <= version]
+    return filter_fields_by_version(event_end_fields, version)
 
 
 @cache

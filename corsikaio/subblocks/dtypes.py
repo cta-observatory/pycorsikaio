@@ -23,3 +23,8 @@ def build_dtype(fields, itemsize=4 * 273):
             dt["formats"].append(field.dtype)
 
     return np.dtype(dict(**dt))
+
+
+def filter_fields_by_version(fields, version):
+    """Return only fields whose min_version is <= the provided version."""
+    return [field for field in fields if field.min_version <= version]

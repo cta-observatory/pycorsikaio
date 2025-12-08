@@ -1,7 +1,7 @@
 from functools import cache
 import numpy as np
 
-from .dtypes import Field, build_dtype
+from .dtypes import Field, build_dtype, filter_fields_by_version
 
 
 run_header_fields = [
@@ -43,7 +43,7 @@ run_header_fields = [
 
 
 def get_run_header_fields(version):
-    return [field for field in run_header_fields if field.min_version <= version]
+    return filter_fields_by_version(run_header_fields, version)
 
 
 @cache
