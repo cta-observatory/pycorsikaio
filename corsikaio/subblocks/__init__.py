@@ -1,10 +1,10 @@
 import numpy as np
 
-from .run_header import get_run_header_types, get_run_header_thin_types
+from .run_header import get_run_header_dtype, get_run_header_thin_dtype
 from .run_end import run_end_dtype, run_end_thin_dtype
 
-from .event_header import get_event_header_types, get_event_header_thin_types
-from .event_end import get_event_end_types, get_event_end_thin_types
+from .event_header import get_event_header_dtype, get_event_header_thin_dtype
+from .event_end import get_event_end_dtype, get_event_end_thin_dtype
 
 from .data import cherenkov_photons_dtype, cherenkov_photons_thin_dtype, particle_data_dtype, particle_data_thin_dtype
 from .longitudinal import longitudinal_data_dtype
@@ -26,12 +26,12 @@ __all__ = [
 
 def parse_run_header(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
-    return np.frombuffer(run_header_bytes, dtype=get_run_header_types(version))
+    return np.frombuffer(run_header_bytes, dtype=get_run_header_dtype(version))
 
 
 def parse_run_header_thin(run_header_bytes):
     version = get_version(run_header_bytes, RUNH_VERSION_POSITION)
-    return np.frombuffer(run_header_bytes, dtype=get_run_header_thin_types(version))
+    return np.frombuffer(run_header_bytes, dtype=get_run_header_thin_dtype(version))
 
 
 def parse_run_end(run_end_bytes):
@@ -44,20 +44,20 @@ def parse_run_end_thin(run_end_bytes):
 
 def parse_event_header(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    return np.frombuffer(event_header_bytes, dtype=get_event_header_types(version))
+    return np.frombuffer(event_header_bytes, dtype=get_event_header_dtype(version))
 
 
 def parse_event_header_thin(event_header_bytes):
     version = get_version(event_header_bytes, EVTH_VERSION_POSITION)
-    return np.frombuffer(event_header_bytes, dtype=get_event_header_thin_types(version))
+    return np.frombuffer(event_header_bytes, dtype=get_event_header_thin_dtype(version))
 
 
 def parse_event_end(event_end_bytes, version):
-    return np.frombuffer(event_end_bytes, dtype=get_event_end_types(np.float32(version)))
+    return np.frombuffer(event_end_bytes, dtype=get_event_end_dtype(version))
 
 
 def parse_event_end_thin(event_end_bytes, version):
-    return np.frombuffer(event_end_bytes, dtype=get_event_end_thin_types(np.float32(version)))
+    return np.frombuffer(event_end_bytes, dtype=get_event_end_thin_dtype(version))
 
 
 def get_version(header_bytes, version_pos):

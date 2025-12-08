@@ -26,10 +26,10 @@ def get_event_end_fields(version):
 
 
 @cache
-def get_event_end_types(version):
+def get_event_end_dtype(version):
     return build_dtype(get_event_end_fields(version))
 
 
 @cache
-def get_event_end_thin_types(version):
+def get_event_end_thin_dtype(version):
     return build_dtype(get_event_end_fields(version), itemsize=4 * 312)

@@ -132,10 +132,10 @@ def get_event_header_fields(version):
 
 
 @cache
-def get_event_header_types(version):
+def get_event_header_dtype(version):
     return build_dtype(get_event_header_fields(version))
 
 
 @cache
-def get_event_header_thin_types(version):
+def get_event_header_thin_dtype(version):
     return build_dtype(get_event_header_fields(version), itemsize=4 * 312)
