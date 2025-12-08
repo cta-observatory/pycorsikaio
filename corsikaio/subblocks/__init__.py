@@ -1,5 +1,4 @@
 import numpy as np
-import struct
 
 from .run_header import get_run_header_types, get_run_header_thin_types
 from .run_end import run_end_dtype, run_end_thin_dtype
@@ -63,7 +62,7 @@ def parse_event_end_thin(event_end_bytes, version):
 
 def get_version(header_bytes, version_pos):
     sl = slice(4 * (version_pos - 1), 4 * version_pos)
-    return np.float32(struct.unpack("f", header_bytes[sl])[0])
+    return np.frombuffer(header_bytes[sl], dtype=np.float32)[0]
 
 
 def parse_data_block(data_block_bytes, dtype):
