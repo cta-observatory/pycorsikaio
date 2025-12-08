@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from collections import namedtuple
 
@@ -34,6 +35,17 @@ def _to_floatarray(block):
     return np.frombuffer(block, dtype=np.float32)
 
 
+MIN_VERSION = np.float32(6.5)
+MAX_VERSION = np.float32(7.801)
+
+class UnknownOldCORSIKA(UserWarning):
+    """Warning in case CORSIKA version is older than oldest known version."""
+
+
+class UnknownNewCORSIKA(UserWarning):
+    """Warning in case CORSIKA version is newer than latest known version."""
+
+
 class CorsikaFile:
     """
     A file to iterate over events in a CORSIKA binary output file.
@@ -60,7 +72,22 @@ class CorsikaFile:
             self.run_header = parse_run_header(runh_bytes)[0]
         else:
             self.run_header = parse_run_header_thin(runh_bytes)[0]
-        self.version = round(float(self.run_header['version']), 4)
+
+        self.version = self.run_header['version']
+        if self.version < MIN_VERSION:
+            msg = (
+                f"CORSIKA version {self.version} is older than oldest supported version:"
+                f" {MIN_VERSION}. Block data types might contain fields not filled by"
+                " your version of CORSIKA"
+            )
+            warnings.warn(msg, category=UnknownOldCORSIKA)
+        elif self.version > MAX_VERSION:
+            msg = (
+                f"CORSIKA version {self.version} is newer than the newest supported version."
+                f"Block data types might miss fields introduced after version {MAX_VERSION}."
+            )
+            warnings.warn(msg, category=UnknownNewCORSIKA)
+
         self._run_end = None
 
     @property

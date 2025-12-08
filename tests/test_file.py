@@ -17,16 +17,16 @@ def test_version():
     from corsikaio import CorsikaFile
 
     with CorsikaFile('tests/resources/mmcs65') as f:
-        assert isinstance(f.version, float)
-        assert f.version == 6.5
+        assert isinstance(f.version, np.float32)
+        assert f.version == np.float32(6.5)
 
     with CorsikaFile('tests/resources/corsika74100') as f:
-        assert isinstance(f.version, float)
-        assert f.version == 7.41
+        assert isinstance(f.version, np.float32)
+        assert f.version == np.float32(7.41)
 
     with CorsikaFile('tests/resources/corsika76900_thin', thinning = True) as f:
-        assert isinstance(f.version, float)
-        assert f.version == 7.69
+        assert isinstance(f.version, np.float32)
+        assert f.version == np.float32(7.69)
 
 
 def test_next():
@@ -214,7 +214,6 @@ def test_compressed(test_path, compression, tmp_path):
             assert event.header["event_number"] == compressed_event.header["event_number"]
 
 
-
 def test_eventio(tmp_path):
     from corsikaio.io import MagicBytes
     dummy_eventio = tmp_path / "test.eventio"
@@ -231,3 +230,19 @@ def test_eventio(tmp_path):
 
     with pytest.raises(ValueError, match="eventio"):
         CorsikaCherenkovFile(dummy_eventio_zst)
+
+
+def test_version_warnings(monkeypatch):
+    from corsikaio import CorsikaFile
+    from corsikaio import file as corsikaio_file
+
+    monkeypatch.setattr(corsikaio_file, "MIN_VERSION", 7.123)
+    monkeypatch.setattr(corsikaio_file, "MAX_VERSION", 7.567)
+
+    with pytest.warns(corsikaio_file.UnknownOldCORSIKA):
+        with CorsikaFile('tests/resources/mmcs65') as f:
+            assert f.version == np.float32(6.5)
+
+    with pytest.warns(corsikaio_file.UnknownNewCORSIKA):
+        with CorsikaFile('tests/resources/corsika76900_thin', thinning = True) as f:
+            assert f.version == np.float32(7.69)
