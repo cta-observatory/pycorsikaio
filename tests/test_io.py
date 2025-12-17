@@ -146,7 +146,7 @@ def test_versions():
     from corsikaio.constants import RUNH_VERSION_POSITION
     from corsikaio.constants import EVTH_VERSION_POSITION
 
-    for path, version in zip(test_files, (6.5, 7.41)):
+    for path, version in zip(test_files, (np.float32(6.5), np.float32(7.41))):
         buffer_size = read_buffer_size(path)
 
         with open(path, 'rb') as f:
