@@ -19,7 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          - python-version: "3.11"
+            extra_requirements: "numpy~=1.26"
+          - python-version: "3.12"
+          - python-version: "3.13"
+          - python-version: "3.14"
 
     steps:
       - uses: actions/checkout@v6
@@ -32,10 +37,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
+        env:
+          EXTRA_REQUIREMENTS: ${{ matrix.extra_requirements }}
         run: |
           python --version
           pip install codecov pytest-cov flake8
-          pip install -e .[all]
+          pip install -e .[all] ${EXTRA_REQUIREMENTS}
           pip freeze
 
       - name: Static codechecks
