@@ -4,8 +4,8 @@ Functions related to the CORSIKA longitudinal distribution
 import re
 import numpy as np
 
-PARTICLE_HEADER_RE = re.compile(r"LONGITUDINAL DISTRIBUTION IN\s+(\d+)\s+(SLANT|VERTICAL)\s+STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
-ENERGY_HEADER_RE = re.compile(r"LONGITUDINAL ENERGY DEPOSIT IN\s+(\d+)\s+(SLANT|VERTICAL)\s+STEPS OF\s+(\d+(?:.\d*)?) G\/CM\*\*2 FOR SHOWER\s+(\d+)")
+PARTICLE_HEADER_RE = re.compile(r"LONGITUDINAL DISTRIBUTION IN\s+(\d+)\s+(SLANT|VERTICAL)\s+STEPS OF\s+(\d+(?:\.\d*)?)\s+G\/CM\*\*2 FOR SHOWER\s+(\d+)")
+ENERGY_HEADER_RE = re.compile(r"LONGITUDINAL ENERGY DEPOSIT IN\s+(\d+)\s+(SLANT|VERTICAL)\s+STEPS OF\s+(\d+(?:\.\d*)?)\s+G\/CM\*\*2 FOR SHOWER\s+(\d+)")
 
 ENERGY_COLUMNS = [
     "depth",
@@ -54,7 +54,7 @@ def read_longitudinal_distributions(path):
     longitudinal : dict
         Dict with the information for one air shower.
         Contains the longitudinal tables for "particles" and "energy_deposition"
-        and the "parameters", "chi2_ndf" and "average_deviation" values of the 
+        and the "parameters", "chi2_ndf" and "average_deviation" values of the
         fit to the distribution if available.
     """
     first = True
